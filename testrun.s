@@ -82,8 +82,7 @@ s5
 ;// LOOP HERE FOR INPUTS
 
 
-stop	m_flush		;// FLUSH DISPLAY
-	STP		;// STOP PROGRAM
+stop	STP	;// STOP PROGRAM
 
 ;// -------------------------
 ;// PROGRAM RUNTIME ENDS HERE
