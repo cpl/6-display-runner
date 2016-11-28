@@ -30,26 +30,34 @@
 ;// DEFINE THE PLAYER POSITIONS ON THE LEFT MOST
 ;// 7 SEGEMENT DIGIT DISPLAY.
 
-top	DEFW	&0001;// Display: 0000_0001
-mid	DEFW	&0002;// Display: 0100_0000
-bot	DEFW	&0003;// Display: 0000_1000
-nul	DEFW	&0000;// Display: 1000_0000
+top	DEFW	&0001	;// Display: 0000_0001
+mid	DEFW	&0002	;// Display: 0100_0000
+bot	DEFW	&0003	;// Display: 0000_1000
+nul	DEFW	&0000	;// Display: 1000_0000
 
 ;// ---------------------------
 ;// PROGRAM RUNTIME BEGINS HERE
 ;// START
 ;// ---------------------------
 
-start	LDA	0000	;// BEGIN ACC AT 0
+start	ORG	0000	;// BEGIN AT RESET ADDRESS
 
-
-m_top	;// TEST ACC TO top
-	;// SET display0..5 TO top
-	LDA	top
+	JMP	m_flush
 
 
 
-	LDA	&9999	;// END ACC AT 9999
+
+
+
+
+
+
+
+
+
+
+
+
 stop	STP
 ;// -------------------------
 ;// PROGRAM RUNTIME ENDS HERE
@@ -60,6 +68,15 @@ stop	STP
 ;// UTILITY METHODS GO BELOW THIS LINE
 ;// ----------------------------------
 
+
+;// DEFINITONS:
+;// m - method
+;// d - digits
+;//   a - all
+;//     t - top
+;//     m - mid
+;//     b - bot
+
 m_all	;// SET ALL DISPLAYS TO THE VALUE IN ACC
 	STA	&FF5	;// display 0
 	STA	&FF6	;// display 1
@@ -68,5 +85,31 @@ m_all	;// SET ALL DISPLAYS TO THE VALUE IN ACC
 	STA	&FF9	;// display 4
 	STA	&FFA	;// display 5
 
+
 m_flush	;// SET ALL DISPLAYS TO nul
 	LDA	nul
+	JMP	m_all
+;// END m_flush
+
+
+m_dat	;// SET ALL DISPLAYS TO top
+	LDA	top
+	JMP	m_all
+;// END m_dat
+
+
+m_dam	;// SET ALL DISPLAYS TO mid
+	LDA	mid
+	JMP	m_all
+;// END m_dam
+
+
+m_dab	;// SET ALL DISPLAYS TO bot
+	LDA	bot
+	JMP	m_all
+;// END m_dab
+
+
+;// ---------------------
+;// KILL ANY ROUGE METHOD
+kill	STP
