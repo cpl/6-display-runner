@@ -45,10 +45,18 @@ input
 	SUB	krs	;// CHECK reset
 	JGE	m_flush	;// FLUSH BOARD
 	
-	LDA	&FF2	;// CHECK ROW4
-	SUB	krh	;// CHECK shift
-	JGE	m_dat	;// SET DIGITS TOP
+	LDA	&FEE	;// CHECK SWITCHES
+	SUB	rms	;// CHECK right switch
+	JGE	m_pmb	;// MOVE bot
 	
+	LDA	&FEE	;// CHECK SWITCHES
+	SUB	lms	;// CHECK left switch
+	JGE	m_pmt	;// MOVE top
+
+	LDA	&FEE	;// CHECK SWITCHES
+	JGE	m_pmm	;// STAY mid
+
+
 
 	JMP	input
 ;// LOOP HERE FOR INPUTS
@@ -74,9 +82,15 @@ mid	DEFW	&0002	;// Display: 0100_0000
 bot	DEFW	&0003	;// Display: 0000_1000
 nul	DEFW	&0000	;// Display: 1000_0000
 
+;// UTILITY BUTTONS
+
 krs	DEFW	&0080	;// KeyRow4: reset
 krh	DEFW	&0040	;// KeyRow4: shift
 
+;// MOVEMENT KEYS
+
+lms	DEFW	&0001	;// Switch1: up
+rms	DEFW	&0002	;// Switch2: down
 
 ;// ----------------------------------
 ;// UTILITY METHODS GO BELOW THIS LINE
@@ -132,33 +146,33 @@ m_dab	;// SET ALL DISPLAYS TO bot
 
 
 STP
-m_dpt	;// SET player TO top
+m_pmt	;// SET player TO top
 	LDA	top
-	STA	&FF5
+	STA	&FFA
 	JMP	input
 ;// END m_dpt
 
 
 STP
-m_dpm	;// SET player TO mid
+m_pmm	;// SET player TO mid
 	LDA	mid
-	STA	&FF5
+	STA	&FFA
 	JMP	input
 ;// END m_dpm
 
 
 STP
-m_dpb	;// SET player TO bot
-	LDA	top
-	STA	&FF5
+m_pmb	;// SET player TO bot
+	LDA	bot
+	STA	&FFA
 	JMP	input
 ;// END m_dpb
 
 
 STP
-m_dpn	;// SET player TO nul
-	LDA	top
-	STA	&FF5
+m_pmn	;// SET player TO nul
+	LDA	nul
+	STA	&FFA
 	JMP	input
 ;// END m_dpn
 
