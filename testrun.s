@@ -39,9 +39,32 @@
 
 start	ORG	0000
 
+	JMP m_reset	;// FULL SYSTEM RESET
+
+init			;// START RUNTIME
+
+menu	LDA	&FEF	;// CHECK ROW1
+	SUB	kstart	;// CHECK start
+	JNE	menu	;// CHECK NOT ZERO
+	JGE	load	;// GO TO LOADING
+
+;// LOADING TIME
+load	LDA	dload	;// LOAD LOADING DELAY
+l1	SUB	one	;// SUB ONE FROM DELAY
+	JNE	l1	;// CHECK IF END OF DELAY
+	LDA	dcount	;// LOAD COUNT
+	ADD	one	;// ADD TO COUNTS
+	STA	dcount	;// STORE NEW COUNT
+	JNE	load	;// IF NOT ZERO
+	JMP	skip	;// IF ZERO
+	
 
 ;// IF NO INPUT, DELAY AND SKIP
 skip
+
+
+
+
 
 ;// TAKE INPUT FROM THE BOARD
 input
@@ -50,9 +73,9 @@ input
 	LDA	&FF2	;// CHECK ROW4
 	SUB	kreset	;// CHECK reset
 	JNE	s1	;// CHECK NOT ZERO
-	JGE	m_flush	;// FLUSH BOARD
+	JGE	m_reset	;// FLUSH BOARD
 s1
-	
+
 	LDA	&FEE	;// CHECK SWITCHES
 	SUB	mms	;// CHECK both switchs
 	JNE	s2	;// CHECK NON ZERO
@@ -76,27 +99,49 @@ s4
 	JNE	s5	;// CHECK NON ZERO
 	JGE	stop	;// STOP stop
 s5
+
+
+	;// FORCE PLAYER LOCATION TO THE MIDDLE
+	;// IF NO CONTROL IS PRESSED
 	
+	LDA	&FEE	;// CHECK SWITCHES
+	JNE	skip	;// CHECK NON ZERO
+	JMP	m_pmm	;// MOVE player TO mid
+
+
+	;// STOP THE GAME IF THE PLAYER REMOVES
+	;// CONTROL OF BOTH BUTTONS
+	;
+	;LDA	&FEE	;// CHECK SWITCHES
+	;JNE	skip	;// CHECK NON ZERO
+	;STP		;// STOP IF NOTHING
+	;
+	;// EXPERIMENTAL FEAUTRE
+
 
 	JMP	skip
 ;// LOOP HERE FOR INPUTS
 
 
-stop	STP	;// STOP PROGRAM
+stop	LDA	s_stop
+	SUB	one
+	STA	s_stop
+	JMP	m_reset
 
 ;// -------------------------
 ;// PROGRAM RUNTIME ENDS HERE
 ;// STOP
 ;// -------------------------
 
+
 ;// -------------------------
 ;// MEMORY ALOCATION
 ;// -------------------------
 
+
 ;// DEFINE THE PLAYER POSITIONS ON THE LEFT MOST
 ;// 7 SEGEMENT DIGIT DISPLAY.
 ;// CAN BE REUSED FOR OTHER PURPOSES TOO
-
 
 top	DEFW	&0001	;// Display: 0000_0001
 mid	DEFW	&0002	;// Display: 0100_0000
@@ -108,12 +153,24 @@ nul	DEFW	&0000	;// Display: 1000_0000
 kreset	DEFW	&0080	;// KeyRow4: reset
 kshift	DEFW	&0040	;// KeyRow4: shift
 kstop	DEFW	&0002	;// KeyRow1: AC
+kstart	DEFW	&0004	;// KeyRow1: C
 
 ;// MOVEMENT KEYS
 
 lms	DEFW	&0001	;// Switch1: up
 rms	DEFW	&0002	;// Switch2: down
 mms	DEFW	&0003	;// Switch1 & Switch2: mid
+
+;// DELAYS
+dload	DEFW	&FFFF	;// INITIAL LOAD TIME DELAY
+dcount	DEFW	&FFF0	;// NUMBER OF LOADS (FFFF-)
+
+;// DECIMALS
+zero	DEFW	&0	;// NUMBER ZERO IN DECIMAL
+one	DEFW	&1	;// NUMBER ONE IN DECIMAL
+
+;// SIGNALS
+s_stop	DEFW	&1	;// INITAL TO 0, STOP SIGNAL
 
 ;// ----------------------------------
 ;// UTILITY METHODS GO BELOW THIS LINE
@@ -130,6 +187,22 @@ mms	DEFW	&0003	;// Switch1 & Switch2: mid
 
 
 STP
+m_reset	;// FULL SYSTEM RESET
+	LDA	nul
+	STA	&FF5	;// display 0
+	STA	&FF6	;// display 1
+	STA	&FF7	;// display 2
+	STA	&FF8	;// display 3
+	STA	&FF9	;// display 4
+	STA	&FFA	;// display 5
+	STA	&FFE	;// bar graph
+	
+	LDA	s_stop	;// CHECK FOR STOP SIGNAL
+	JNE	init	;// NO SIGNAL, GO TO init
+	
+	STP		;// STOP THE PROGRAM
+
+STP
 m_all	;// SET ALL DISPLAYS TO THE VALUE IN ACC
 	STA	&FF5	;// display 0
 	STA	&FF6	;// display 1
@@ -137,7 +210,7 @@ m_all	;// SET ALL DISPLAYS TO THE VALUE IN ACC
 	STA	&FF8	;// display 3
 	STA	&FF9	;// display 4
 	STA	&FFA	;// display 5
-	
+
 	JMP	skip	;// RESET BACK TO input, WAIT FOR skip
 
 STP
