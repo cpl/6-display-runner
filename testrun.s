@@ -82,7 +82,9 @@ s5
 ;// LOOP HERE FOR INPUTS
 
 
-stop	STP
+stop	m_flush		;// FLUSH DISPLAY
+	STP		;// STOP PROGRAM
+
 ;// -------------------------
 ;// PROGRAM RUNTIME ENDS HERE
 ;// STOP
@@ -137,7 +139,7 @@ m_all	;// SET ALL DISPLAYS TO THE VALUE IN ACC
 	STA	&FF9	;// display 4
 	STA	&FFA	;// display 5
 	
-	JMP	input	;// RESET BACK TO input
+	JMP	skip	;// RESET BACK TO input, WAIT FOR skip
 
 STP
 m_flush	;// SET ALL DISPLAYS TO nul
@@ -171,7 +173,7 @@ STP
 m_pmt	;// SET player TO top
 	LDA	top
 	STA	&FFA
-	JMP	input
+	JMP	skip
 ;// END m_dpt
 
 
@@ -179,7 +181,7 @@ STP
 m_pmm	;// SET player TO mid
 	LDA	mid
 	STA	&FFA
-	JMP	input
+	JMP	skip
 ;// END m_dpm
 
 
@@ -187,7 +189,7 @@ STP
 m_pmb	;// SET player TO bot
 	LDA	bot
 	STA	&FFA
-	JMP	input
+	JMP	skip
 ;// END m_dpb
 
 
@@ -195,7 +197,7 @@ STP
 m_pmn	;// SET player TO nul
 	LDA	nul
 	STA	&FFA
-	JMP	input
+	JMP	skip
 ;// END m_dpn
 
 
