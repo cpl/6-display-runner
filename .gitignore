@@ -1,0 +1,5 @@
+# IGNORE COMPILED FILES .kmd #
+*.kmd
+
+# IGNORE OS MISC FILES #
+*.DS_Store
