@@ -131,6 +131,38 @@ m_dab	;// SET ALL DISPLAYS TO bot
 ;// END m_dab
 
 
+STP
+m_dpt	;// SET player TO top
+	LDA	top
+	STA	&FF5
+	JMP	input
+;// END m_dpt
+
+
+STP
+m_dpm	;// SET player TO mid
+	LDA	mid
+	STA	&FF5
+	JMP	input
+;// END m_dpm
+
+
+STP
+m_dpb	;// SET player TO bot
+	LDA	top
+	STA	&FF5
+	JMP	input
+;// END m_dpb
+
+
+STP
+m_dpn	;// SET player TO nul
+	LDA	top
+	STA	&FF5
+	JMP	input
+;// END m_dpn
+
+
 ;// ---------------------
 ;// KILL ANY ROUGE METHOD
 kill	STP
