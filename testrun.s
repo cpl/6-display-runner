@@ -25,6 +25,10 @@
 ;// START	END
 ;// FF5		FFA
 ;// RIGHT	LEFT
+
+;// LEFT MOST DISPLAY IS THE PLAYER
+;// FFA - PLAYER
+
 ;// --------------------------------------------------------------------
 
 
@@ -36,29 +40,45 @@
 start	ORG	0000
 
 
+;// IF NO INPUT, DELAY AND SKIP
+skip
+
 ;// TAKE INPUT FROM THE BOARD
 input
 
 
-
 	LDA	&FF2	;// CHECK ROW4
-	SUB	krs	;// CHECK reset
+	SUB	kreset	;// CHECK reset
+	JNE	s1	;// CHECK NOT ZERO
 	JGE	m_flush	;// FLUSH BOARD
+s1
 	
+	LDA	&FEE	;// CHECK SWITCHES
+	SUB	mms	;// CHECK both switchs
+	JNE	s2	;// CHECK NON ZERO
+	JGE	m_pmm	;// MOVE mid
+s2
+
 	LDA	&FEE	;// CHECK SWITCHES
 	SUB	rms	;// CHECK right switch
+	JNE	s3	;// CHECK NON ZERO
 	JGE	m_pmb	;// MOVE bot
-	
+s3
+
 	LDA	&FEE	;// CHECK SWITCHES
 	SUB	lms	;// CHECK left switch
+	JNE	s4	;// CHECK NON ZERO
 	JGE	m_pmt	;// MOVE top
+s4
 
-	LDA	&FEE	;// CHECK SWITCHES
-	JGE	m_pmm	;// STAY mid
+	LDA	&FEF	;// CHECK ROW1
+	SUB	kstop	;// CHECK stop
+	JNE	s5	;// CHECK NON ZERO
+	JGE	stop	;// STOP stop
+s5
+	
 
-
-
-	JMP	input
+	JMP	skip
 ;// LOOP HERE FOR INPUTS
 
 
@@ -84,13 +104,15 @@ nul	DEFW	&0000	;// Display: 1000_0000
 
 ;// UTILITY BUTTONS
 
-krs	DEFW	&0080	;// KeyRow4: reset
-krh	DEFW	&0040	;// KeyRow4: shift
+kreset	DEFW	&0080	;// KeyRow4: reset
+kshift	DEFW	&0040	;// KeyRow4: shift
+kstop	DEFW	&0002	;// KeyRow1: AC
 
 ;// MOVEMENT KEYS
 
 lms	DEFW	&0001	;// Switch1: up
 rms	DEFW	&0002	;// Switch2: down
+mms	DEFW	&0003	;// Switch1 & Switch2: mid
 
 ;// ----------------------------------
 ;// UTILITY METHODS GO BELOW THIS LINE
