@@ -27,7 +27,6 @@ menu	                  ;// BEGIN MENU
         JNE	menu        ;// CHECK NOT ZERO
         JGE	load        ;// GO TO LOADING
 
-
 load                    ;// BEGIN LOADING
 
         LDA	dload       ;// LOAD LOADING DELAY

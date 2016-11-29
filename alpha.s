@@ -31,16 +31,49 @@ menu						;// LOOP FOR USER START (C)
 			JNE	menu	;// LOOP menu
 			JGE	load	;// START LOADING TIME
 
-load
-
-
+load						;// START WAITING TIME
+			LDA	dly		;// LOAD DELAY TIME
+ld		ADD one		;// COUNT UP
+			STA	&FFE	;// LOAD BAR GRAPH
+			JGE	ld		;// LOOP
 
 skip						;// IF NO INPUT, DELAY AND SKIP
 
 
 input						;// LOOP FOR USER INPUT
 
+			LDA	&FF2  ;// CHECK KEYROW 4
+			SUB	krt	  ;// CHECK RESET
+			JNE	s1	  ;// CHECK NOT ZERO
+			JGE	mrst  ;// RESET BOARD
+s1
 
+			LDA	&FEE	;// CHECK SWITCHES
+			SUB	mmv	  ;// CHECK SWITCH 1,2
+			JNE	s2	  ;// CHECK NON ZERO
+			JGE	mmid  ;// MOVE mid
+s2
+
+			LDA	&FEE  ;// CHECK SWITCHES
+			SUB	bmv	  ;// CHECK SWITCH 2
+			JNE	s3	  ;// CHECK NON ZERO
+			JGE	mbot  ;// MOVE bot
+s3
+
+			LDA	&FEE  ;// CHECK SWITCHES
+			SUB	tmv	  ;// CHECK FOR SWITCH 1
+			JNE	s4	  ;// CHECK NON ZERO
+			JGE	mtop	;// MOVE top
+s4
+
+			LDA	&FEF	;// CHECK KEYROW 1
+			SUB	kst		;// CHECK FOR AC
+			JNE	s5		;// CHECK NON ZERO
+			JGE	halt	;// CALL HALT
+s5
+
+
+			JMP	mmid	;// IF NOT INPUT, STAY MID
 
 halt
 			LDA	nul		;// SET ACC TO ONE
@@ -84,6 +117,24 @@ mlal							;// SET ALL DISPLAYS TO ACC
 			STA	&FFA		;// SET DISPLAY 5
 			STA	&FFE		;// SET BAR GRAPH
 
+STP
+mtop							;// MOVE PLAYER TO TOP
+			LDA	top			;// LOAD TOP POSITION
+			STA	&FFA		;// SET DISPLAY TO POS
+			JMP	skip
+
+STP
+mmid							;// MOVE PLAYER TO MIDDLE
+			LDA	mid			;// LOAD MIDDLE POSITION
+			STA	&FFA		;// SET DISPLAY TO POS
+			JMP	skip
+
+STP
+mbot							;// MOVE PLAYER TO BOTTOM
+			LDA	bot			;// LOAD BOTTOM POSITION
+			STA	&FFA		;// SET DISPLAY TO POS
+			JMP	skip
+
 ;// 	|-------------------------------------|
 ;// 	| PROGRAM MEMORY ALOCATION            |
 ;//		|-------------------------------------|
@@ -112,13 +163,13 @@ ksf		DEFW	&0040	;// KEYROW 4, SHIFT
 
 ;//		|	SWITCHES														|
 
-lmv		DEFW	&0001	;// SWITCH 1
-rmv		DEFW	&0002	;//	SWITCH 2
+tmv		DEFW	&0001	;// SWITCH 1
+bmv		DEFW	&0002	;//	SWITCH 2
 mmv		DEFW	&0003	;//	SWITCH 1 & SWITCH 2
 
 ;//		| DELAYS															|
-dld	DEFW	&FFFF	;//	MAX LOAD TIME
-dco	DEFW	&FFF0	;// WAIT FOR F LOOPS
+dly		DEFW	&0000	;//	START LOAD TIME
+dlc		DEFW	&FFF0	;// WAIT FOR F LOOPS
 
 ;//		|-------------------------------------|
 ;//		| SOURCE CODE STOPS HERE              |
