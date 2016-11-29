@@ -25,11 +25,19 @@ init	ORG	0000	;// RESET MEMORY ADRESS
 
 runt						;// START PROGRAM RUNTIME
 
+;// 	|-------------------------------------|
+;// 	| WAIT FOR START INPUT (C)		        |
+;// 	|-------------------------------------|
+
 menu						;// LOOP FOR USER START (C)
 			LDA	&FEF	;// CHECK INPUT KEYROW 1
 			SUB	ksa		;// CHECK INPUT KEYROW 1 START
 			JNE	menu	;// LOOP menu
 			JGE	load	;// START LOADING TIME
+
+;// 	|-------------------------------------|
+;// 	| PASS LOADING TIME						        |
+;// 	|-------------------------------------|
 
 load						;// START WAITING TIME
 			LDA	dly		;// LOAD DELAY TIME
@@ -37,8 +45,16 @@ ld		ADD one		;// COUNT UP
 			STA	&FFE	;// LOAD BAR GRAPH
 			JGE	ld		;// LOOP
 
+;// 	|-------------------------------------|
+;// 	| SKIP LOADING TIME						        |
+;// 	|-------------------------------------|
+
 skip						;// IF NO INPUT, DELAY AND SKIP
 
+
+;// 	|-------------------------------------|
+;// 	| SCAN FOR USER INPUT					        |
+;// 	|-------------------------------------|
 
 input						;// LOOP FOR USER INPUT
 
@@ -74,6 +90,10 @@ s5
 
 
 			JMP	mmid	;// IF NOT INPUT, STAY MID
+
+;// 	|-------------------------------------|
+;// 	| HALT												        |
+;// 	|-------------------------------------|
 
 halt
 			LDA	nul		;// SET ACC TO ONE
@@ -168,8 +188,21 @@ bmv		DEFW	&0002	;//	SWITCH 2
 mmv		DEFW	&0003	;//	SWITCH 1 & SWITCH 2
 
 ;//		| DELAYS															|
-dly		DEFW	&0000	;//	START LOAD TIME
+dly		DEFW	&000F	;//	START LOAD TIME
 dlc		DEFW	&FFF0	;// WAIT FOR F LOOPS
+
+;// 	|-------------------------------------|
+;// 	| COMPILER DEFINED CONSTANTS          |
+;//		|-------------------------------------|
+
+dp0		EQU		&FF5	;// CONSTANT DISPLAY 0
+dp1		EQU		&FF6	;// CONSTANT DISPLAY 0
+dp2		EQU		&FF7	;// CONSTANT DISPLAY 0
+dp3		EQU		&FF8	;// CONSTANT DISPLAY 0
+dp4		EQU		&FF9	;// CONSTANT DISPLAY 0
+dp5		EQU		&FFA	;// CONSTANT DISPLAY 0
+
+dbg		EQU		&FFE	;// CONSTANT BAR GRAPH
 
 ;//		|-------------------------------------|
 ;//		| SOURCE CODE STOPS HERE              |
