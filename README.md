@@ -39,6 +39,9 @@ The following memory locations have been alocated for accessing the ```FGPA Boar
 | Switch        | &FEE          | Using the two switches for moving the ```player``` (```display5```) up or down.   |
 | Buzzer Input  | &FFD          | Used for playing "music".                                                         |
 | Buzzer Busy   | &FF3          | Decide if buzzer can play the next sound.                                         |
+| Graph Bar     | &FFE          | Display loading times.                                                            |
+| S6 LEDS       | &FF4          | ?                                                                                 |
+| Board LED     | &FFC          | ?                                                                                 |
 
 | Display | Address | Description     |
 |---------|---------|-----------------|
