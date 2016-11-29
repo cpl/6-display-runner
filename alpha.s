@@ -45,8 +45,8 @@ load						;// START WAITING TIME
 			STA	tmp		;// STORE LOCAL COUNT
 ldc
 			LDA	dly		;// LOAD DELAY TIME
-ldl		SUB one		;// COUNT DOWN
-			JNE	ldl		;// LOOP
+ldl0	SUB one		;// COUNT DOWN
+			JNE	ldl0	;// LOOP
 			LDA	tmp		;// LOAD DELAY COUNT
 			SUB one		;// COUNT DOWN
 			STA dbg		;// UPDATE GRAPH BAR
@@ -58,6 +58,19 @@ ldl		SUB one		;// COUNT DOWN
 ;// 	|-------------------------------------|
 
 skip						;// IF NO INPUT, DELAY AND SKIP
+
+			LDA dlp		;// LOAD GLOBAL COUNT
+			STA tmp		;// STORE LOCAL COUNT
+ldp
+			LDA	dly		;// LOAD DELAY TIME
+ldl1	SUB one		;// COUNT DOWN
+			JNE ldl1	;// LOOP
+			LDA tmp		;// LOAD DELAY COUNT
+			SUB one		;// COUNT DOWN
+			STA	dbg		;// UPDATE GRAPH BAR
+			STA	tmp		;// STORE COUNT
+			JNE	ldp		;// DELAY MORE
+
 
 ;// 	|-------------------------------------|
 ;// 	| SCAN FOR USER INPUT					        |
@@ -198,6 +211,7 @@ mmv		DEFW	&0003	;//	SWITCH 1 & SWITCH 2
 ;//		| DELAYS															|
 dly		DEFW	50000	;//	INNER DELAY TIME
 dlc		DEFW	00016	;// WAIT FOR N SECONDS
+dlp		DEFW	00003	;// WAIT FOR INPUT
 
 ;//		|	TEMPORARY STORAGE	VARIABLES					|
 tmp		DEFW	&0000	;//	TEMPROARY VARIABLE
