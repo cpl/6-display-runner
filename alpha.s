@@ -54,7 +54,7 @@ ldl0	SUB one		;// COUNT DOWN
 			JNE	ldc		;// DELAY MORE
 
 ;// 	|-------------------------------------|
-;// 	| SKIP LOADING TIME						        |
+;// 	| SKIP, LOADING TIME					        |
 ;// 	|-------------------------------------|
 
 skip						;// IF NO INPUT, DELAY AND SKIP
@@ -67,7 +67,9 @@ ldl1	SUB one		;// COUNT DOWN
 			JNE ldl1	;// LOOP
 			LDA tmp		;// LOAD DELAY COUNT
 			SUB one		;// COUNT DOWN
-			STA	dbg		;// UPDATE GRAPH BAR
+
+			;// TODO!!! - ADD BAR GRAPH UPDATE
+
 			STA	tmp		;// STORE COUNT
 			JNE	ldp		;// DELAY MORE
 
@@ -176,6 +178,7 @@ mbot							;// MOVE PLAYER TO BOTTOM
 			STA	dp5			;// SET DISPLAY TO POS
 			JMP	skip
 
+
 ;// 	|-------------------------------------|
 ;// 	| PROGRAM MEMORY ALOCATION            |
 ;//		|-------------------------------------|
@@ -209,11 +212,14 @@ bmv		DEFW	&0002	;//	SWITCH 2
 mmv		DEFW	&0003	;//	SWITCH 1 & SWITCH 2
 
 ;//		| DELAYS															|
+
 dly		DEFW	50000	;//	INNER DELAY TIME
 dlc		DEFW	00016	;// WAIT FOR N SECONDS
 dlp		DEFW	00003	;// WAIT FOR INPUT
 
 ;//		|	TEMPORARY STORAGE	VARIABLES					|
+
+bgt		DEFW	&0000	;// TEMPORARY BAR GRAPH
 tmp		DEFW	&0000	;//	TEMPROARY VARIABLE
 
 ;// 	|-------------------------------------|
