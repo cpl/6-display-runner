@@ -1,23 +1,22 @@
 ;// |-------------------------------------|
-;// |6 DISPLAY RUNNER - A MU0 GAME        |
-;// |by Alexandru-Paul Copil, mbaxaac3    |
-;// |(thee-engineer)                      |
+;// |  6 DISPLAY RUNNER - A MU0 GAME      |
+;// |  by Alexandru-Paul Copil, mbaxaac3  |
+;// |  (thee-engineer)                    |
 ;// |                                     |
-;// |LICENSE: MIT                         |
+;// |  LICENSE: MIT                       |
 ;// |                                     |
-;// |STARTED ON : 28/11/2016              |
-;// |LAST EDIT  : XX/11/2016              |
+;// |  STARTED ON : 28/11/2016            |
+;// |  LAST EDIT  : XX/11/2016            |
 ;// |                                     |
 ;// |-------------------------------------|
 
 
-;// |-------------------------------|
-;// | PROGRAM RUNTIME BEGINS HERE   |
-;// | START                         |
-;// |-------------------------------|
+;// |-----------------------------------|
+;// | PROGRAM SOURCE CODE BEGINS HERE   |
+;// |-----------------------------------|
 
 
-start ORG 0000          ;// RESET MEMORY ADRESS
+start 	ORG 0000        ;// RESET MEMORY ADRESS
 
         JMP m_reset     ;// FULL SYSTEM RESET
 
@@ -229,6 +228,7 @@ nul	    DEFW	&0000	;// Display: 1000_0000
 
 kreset	DEFW	&0080	;// KeyRow4: reset
 kshift	DEFW	&0040	;// KeyRow4: shift
+
 kstop	  DEFW	&0002	;// KeyRow1: AC
 kstart	DEFW	&0004	;// KeyRow1: C
 
@@ -239,12 +239,15 @@ rms	    DEFW	&0002	;// Switch2: down
 mms	    DEFW	&0003	;// Switch1 & Switch2: mid
 
 ;// DELAYS
+
 dload	  DEFW	&FFFF	;// INITIAL LOAD TIME DELAY
 dcount	DEFW	&FFF0	;// NUMBER OF LOADS (FFFF-)
 
 ;// DECIMALS
-zero	  DEFW	&0	;// NUMBER ZERO IN DECIMAL
-one	    DEFW	&1	;// NUMBER ONE IN DECIMAL
+
+zero	  DEFW	&0000	;// NUMBER ZERO IN DECIMAL
+one	    DEFW	&0001	;// NUMBER ONE IN DECIMAL
 
 ;// SIGNALS
-s_stop	DEFW	&1	;// INITAL TO 0, STOP SIGNAL
+s_stop	DEFW	&0000	;// INITIAL TO 0, STOP SIGNAL
+s_reset	DEFW	&0000	;// INITIAL TO 0, RESET SIGNAL
