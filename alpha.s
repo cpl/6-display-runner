@@ -40,10 +40,18 @@ menu						;// LOOP FOR USER START (C)
 ;// 	|-------------------------------------|
 
 load						;// START WAITING TIME
+
+			LDA dlc		;// LOAD GLOBAL COUNT
+			STA	tmp		;// STORE LOCAL COUNT
+ldc
 			LDA	dly		;// LOAD DELAY TIME
-ld		ADD one		;// COUNT UP
-			STA	dbg		;// UPDATE BAR GRAPH
-			JGE	ld		;// LOOP
+ldl		SUB one		;// COUNT DOWN
+			JNE	ldl		;// LOOP
+			LDA	tmp		;// LOAD DELAY COUNT
+			SUB one		;// COUNT DOWN
+			STA dbg		;// UPDATE GRAPH BAR
+			STA	tmp		;// STORE COUNT
+			JNE	ldc		;// DELAY MORE
 
 ;// 	|-------------------------------------|
 ;// 	| SKIP LOADING TIME						        |
@@ -188,8 +196,11 @@ bmv		DEFW	&0002	;//	SWITCH 2
 mmv		DEFW	&0003	;//	SWITCH 1 & SWITCH 2
 
 ;//		| DELAYS															|
-dly		DEFW	&000F	;//	START LOAD TIME
-dlc		DEFW	&FFF0	;// WAIT FOR F LOOPS
+dly		DEFW	50000	;//	INNER DELAY TIME
+dlc		DEFW	00016	;// WAIT FOR N SECONDS
+
+;//		|	TEMPORARY STORAGE	VARIABLES					|
+tmp		DEFW	&0000	;//	TEMPROARY VARIABLE
 
 ;// 	|-------------------------------------|
 ;// 	| COMPILER DEFINED CONSTANTS          |
