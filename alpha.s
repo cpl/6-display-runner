@@ -30,7 +30,7 @@ runt						;// START PROGRAM RUNTIME
 ;// 	|-------------------------------------|
 
 menu						;// LOOP FOR USER START (C)
-			LDA	&FEF	;// CHECK INPUT KEYROW 1
+			LDA	kr1		;// CHECK INPUT KEYROW 1
 			SUB	ksa		;// CHECK INPUT KEYROW 1 START
 			JNE	menu	;// LOOP menu
 			JGE	load	;// START LOADING TIME
@@ -42,7 +42,7 @@ menu						;// LOOP FOR USER START (C)
 load						;// START WAITING TIME
 			LDA	dly		;// LOAD DELAY TIME
 ld		ADD one		;// COUNT UP
-			STA	&FFE	;// LOAD BAR GRAPH
+			STA	dbg		;// UPDATE BAR GRAPH
 			JGE	ld		;// LOOP
 
 ;// 	|-------------------------------------|
@@ -51,42 +51,42 @@ ld		ADD one		;// COUNT UP
 
 skip						;// IF NO INPUT, DELAY AND SKIP
 
-
 ;// 	|-------------------------------------|
 ;// 	| SCAN FOR USER INPUT					        |
 ;// 	|-------------------------------------|
 
 input						;// LOOP FOR USER INPUT
 
-			LDA	&FF2  ;// CHECK KEYROW 4
+
+			LDA	kr1		;// CHECK KEYROW 1
+			SUB	kst		;// CHECK FOR AC
+			JNE	s0		;// CHECK NON ZERO
+			JGE	halt	;// CALL HALT
+s0
+
+			LDA	kr4	  ;// CHECK KEYROW 4
 			SUB	krt	  ;// CHECK RESET
 			JNE	s1	  ;// CHECK NOT ZERO
 			JGE	mrst  ;// RESET BOARD
 s1
 
-			LDA	&FEE	;// CHECK SWITCHES
+			LDA	ksw		;// CHECK SWITCHES
 			SUB	mmv	  ;// CHECK SWITCH 1,2
 			JNE	s2	  ;// CHECK NON ZERO
 			JGE	mmid  ;// MOVE mid
 s2
 
-			LDA	&FEE  ;// CHECK SWITCHES
+			LDA	ksw	  ;// CHECK SWITCHES
 			SUB	bmv	  ;// CHECK SWITCH 2
 			JNE	s3	  ;// CHECK NON ZERO
 			JGE	mbot  ;// MOVE bot
 s3
 
-			LDA	&FEE  ;// CHECK SWITCHES
+			LDA	ksw  	;// CHECK SWITCHES
 			SUB	tmv	  ;// CHECK FOR SWITCH 1
 			JNE	s4	  ;// CHECK NON ZERO
 			JGE	mtop	;// MOVE top
 s4
-
-			LDA	&FEF	;// CHECK KEYROW 1
-			SUB	kst		;// CHECK FOR AC
-			JNE	s5		;// CHECK NON ZERO
-			JGE	halt	;// CALL HALT
-s5
 
 
 			JMP	mmid	;// IF NOT INPUT, STAY MID
@@ -113,14 +113,14 @@ STP
 mrst							;// RESET/STOP THE PROGRAM
 			LDA nul			;// LOAD NULL
 
-			STA	&FF5		;// RESET DISPLAY 0
-			STA	&FF6		;// RESET DISPLAY 1
-			STA	&FF7		;// RESET DISPLAY 2
-			STA	&FF8		;// RESET DISPLAY 3
-			STA	&FF9		;// RESET DISPLAY 4
-			STA	&FFA		;// RESET DISPLAY 5
+			STA	dp0			;// RESET DISPLAY 0
+			STA	dp1			;// RESET DISPLAY 1
+			STA	dp2			;// RESET DISPLAY 2
+			STA	dp3			;// RESET DISPLAY 3
+			STA	dp4			;// RESET DISPLAY 4
+			STA	dp5			;// RESET DISPLAY 5
 
-			STA	&FFE			;// RESET BAR GRAPH
+			STA	dbg			;// RESET BAR GRAPH
 
 			LDA	hlt			;//	LOAD STOP SIGNAL
 			JNE	runt		;//	START THE PROGRAM
@@ -129,30 +129,30 @@ mrst							;// RESET/STOP THE PROGRAM
 
 STP
 mlal							;// SET ALL DISPLAYS TO ACC
-			STA	&FF5		;// SET DISPLAY 0
-			STA	&FF6		;// SET DISPLAY 1
-			STA &FF7		;// SET DISPLAY 2
-			STA	&FF8		;// SET DISPLAY 3
-			STA	&FF9		;// SET DISPLAY 4
-			STA	&FFA		;// SET DISPLAY 5
-			STA	&FFE		;// SET BAR GRAPH
+			STA	dp0			;// SET DISPLAY 0
+			STA	dp1			;// SET DISPLAY 1
+			STA dp2			;// SET DISPLAY 2
+			STA	dp3			;// SET DISPLAY 3
+			STA	dp4			;// SET DISPLAY 4
+			STA	dp5			;// SET DISPLAY 5
+			STA	dbg			;// SET BAR GRAPH
 
 STP
 mtop							;// MOVE PLAYER TO TOP
 			LDA	top			;// LOAD TOP POSITION
-			STA	&FFA		;// SET DISPLAY TO POS
+			STA	dp5			;// SET DISPLAY TO POS
 			JMP	skip
 
 STP
 mmid							;// MOVE PLAYER TO MIDDLE
 			LDA	mid			;// LOAD MIDDLE POSITION
-			STA	&FFA		;// SET DISPLAY TO POS
+			STA	dp5			;// SET DISPLAY TO POS
 			JMP	skip
 
 STP
 mbot							;// MOVE PLAYER TO BOTTOM
 			LDA	bot			;// LOAD BOTTOM POSITION
-			STA	&FFA		;// SET DISPLAY TO POS
+			STA	dp5			;// SET DISPLAY TO POS
 			JMP	skip
 
 ;// 	|-------------------------------------|
@@ -195,6 +195,8 @@ dlc		DEFW	&FFF0	;// WAIT FOR F LOOPS
 ;// 	| COMPILER DEFINED CONSTANTS          |
 ;//		|-------------------------------------|
 
+;//		|	OUTPUTS															|
+
 dp0		EQU		&FF5	;// CONSTANT DISPLAY 0
 dp1		EQU		&FF6	;// CONSTANT DISPLAY 0
 dp2		EQU		&FF7	;// CONSTANT DISPLAY 0
@@ -203,6 +205,13 @@ dp4		EQU		&FF9	;// CONSTANT DISPLAY 0
 dp5		EQU		&FFA	;// CONSTANT DISPLAY 0
 
 dbg		EQU		&FFE	;// CONSTANT BAR GRAPH
+
+;//		| INPUTS															|
+
+kr1		EQU		&FEF	;// KEY ROW 1
+kr4		EQU		&FF2	;// KEY ROW 4
+ksw		EQU		&FEE	;// SWITCHES
+
 
 ;//		|-------------------------------------|
 ;//		| SOURCE CODE STOPS HERE              |
