@@ -26,7 +26,7 @@ init	ORG	0000	;// RESET MEMORY ADRESS
 runt						;// START PROGRAM RUNTIME
 
 menu						;// LOOP FOR USER START (C)
-			LDA	ir1		;// CHECK INPUT KEYROW 1
+			LDA	&FEF	;// CHECK INPUT KEYROW 1
 			SUB	ksa		;// CHECK INPUT KEYROW 1 START
 			JNE	menu	;// LOOP menu
 			JGE	load	;// START LOADING TIME
@@ -43,8 +43,8 @@ input						;// LOOP FOR USER INPUT
 
 
 halt
-			LDA	one		;// SET ACC TO ONE
-			STA stp		;// SET STOP SIGNAL TO ONE
+			LDA	nul		;// SET ACC TO ONE
+			STA hlt		;// SET STOP SIGNAL TO ONE
 
 			JMP mrst	;// RESET THEN STOP
 
@@ -60,29 +60,29 @@ STP
 mrst							;// RESET/STOP THE PROGRAM
 			LDA nul			;// LOAD NULL
 
-			STA	dp0			;// RESET DISPLAY 0
-			STA	dp1			;// RESET DISPLAY 1
-			STA	dp2			;// RESET DISPLAY 2
-			STA	dp3			;// RESET DISPLAY 3
-			STA	dp4			;// RESET DISPLAY 4
-			STA	dp5			;// RESET DISPLAY 5
+			STA	&FF5		;// RESET DISPLAY 0
+			STA	&FF6		;// RESET DISPLAY 1
+			STA	&FF7		;// RESET DISPLAY 2
+			STA	&FF8		;// RESET DISPLAY 3
+			STA	&FF9		;// RESET DISPLAY 4
+			STA	&FFA		;// RESET DISPLAY 5
 
-			STA	dbg			;// RESET BAR GRAPH
+			STA	&FFE			;// RESET BAR GRAPH
 
-			LDA	stp			;//	LOAD STOP SIGNAL
+			LDA	hlt			;//	LOAD STOP SIGNAL
 			JNE	runt		;//	START THE PROGRAM
 
 			STP					;// STOP THE PROGRAM
 
 STP
 mlal							;// SET ALL DISPLAYS TO ACC
-			STA	dp0			;// SET DISPLAY 0
-			STA	dp1			;// SET DISPLAY 1
-			STA dp2			;// SET DISPLAY 2
-			STA	dp3			;// SET DISPLAY 3
-			STA	dp4			;// SET DISPLAY 4
-			STA	dp5			;// SET DISPLAY 5
-			STA	dbg			;// SET BAR GRAPH
+			STA	&FF5		;// SET DISPLAY 0
+			STA	&FF6		;// SET DISPLAY 1
+			STA &FF7		;// SET DISPLAY 2
+			STA	&FF8		;// SET DISPLAY 3
+			STA	&FF9		;// SET DISPLAY 4
+			STA	&FFA		;// SET DISPLAY 5
+			STA	&FFE		;// SET BAR GRAPH
 
 ;// 	|-------------------------------------|
 ;// 	| PROGRAM MEMORY ALOCATION            |
@@ -94,24 +94,6 @@ top		DEFW	&0001	;//	DISPLAY: 0000_0001
 mid		DEFW	&0002	;//	DISPLAY: 0100_0000
 bot		DEFW	&0003	;// DISPLAY: 0000_1000
 
-;//		|	BOARD COMPONENTS OUTPUT							|
-
-dp0		DEFW	&FF5	;// DISPLAY 0
-dp1		DEFW	&FF6	;// DISPLAY 1
-dp2		DEFW	&FF7	;// DISPLAY 2
-dp3		DEFW	&FF8	;// DISPLAY 3
-dp4		DEFW	&FF9	;// DISPLAY 4
-dp5		DEFW	&FFA	;// DISPLAY 5
-
-dbg		DEFW	&FFE	;//	BAR GRAPH
-
-;//		| BOARD COMPONENTS INPUTS							|
-
-isw		DEFW	&FEE	;// SWITCHES
-
-ir1		DEFW	&FEF	;// ROW 1
-ir4		DEFW	&FF2	;// ROW 4
-
 ;//		| DECIMALS														|
 
 nul		DEFW	&0000	;// CONSTANT ZERO VALUE
@@ -119,7 +101,7 @@ one		DEFW	&0001	;// CONSTANT ONE  VALUE
 
 ;//		| SIGNALS															|
 
-stp		DEFW	&0000	;// PROGRAM STOP SIGNAL
+hlt		DEFW	&0001	;// PROGRAM HALT SIGNAL
 
 ;//		| KEYROWS															|
 

@@ -18,8 +18,6 @@
 
 start 	ORG 0000        ;// RESET MEMORY ADRESS
 
-        JMP m_reset     ;// FULL SYSTEM RESET
-
 init		                ;// START RUNTIME
 
 menu	                  ;// BEGIN MENU
