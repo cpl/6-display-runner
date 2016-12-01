@@ -32,25 +32,25 @@ MU0 Has a small limited set of instructions.
 #### COMP12111 - Lab FGPA Board
 The following memory locations have been alocated for accessing the ```FGPA Board``` features:
 
-| Feature       | Address       | Description                                                                       |
-|:------------- |:--------------|-----------------------------------------------------------------------------------|
-| KeyRow 1      | &FEF          | Using the ```AC``` button for sending the ```KILL``` signal to the system.        |
-| KeyRow 4      | &FF2          | Using the ```RESET``` button to ```FLUSH``` the displays and ```SHIFT```for tests.|
-| Switch        | &FEE          | Using the two switches for moving the ```player``` (```display5```) up or down.   |
-| Buzzer Input  | &FFD          | Used for playing "music".                                                         |
-| Buzzer Busy   | &FF3          | Decide if buzzer can play the next sound.                                         |
-| Graph Bar     | &FFE          | Display loading times.                                                            |
-| S6 LEDS       | &FF4          | ?                                                                                 |
-| Board LED     | &FFC          | ?                                                                                 |
+| EQU | Feature       | Address       | Description                                                                       |
+|-----|:------------- |:--------------|-----------------------------------------------------------------------------------|
+| kr1 | KeyRow 1      | &FEF          | Using the ```AC``` button for sending the ```KILL``` signal to the system.        |
+| kr4 | KeyRow 4      | &FF2          | Using the ```RESET``` button to ```FLUSH``` the displays and ```SHIFT```for tests.|
+| ksw | Switch        | &FEE          | Using the two switches for moving the ```player``` (```display5```) up or down.   |
+|  ?  | Buzzer Input  | &FFD          | Used for playing "music".                                                         |
+|  ?  | Buzzer Busy   | &FF3          | Decide if buzzer can play the next sound.                                         |
+| dgb | Graph Bar     | &FFE          | Display loading times.                                                            |
+|  ?  | S6 LEDS       | &FF4          | ?                                                                                 |
+|  ?  | Board LED     | &FFC          | ?                                                                                 |
 
-| Display | Address | Description     |
-|---------|---------|-----------------|
-|   0     | &FF5    |   ```player```  |
-|   1     | &FF6    | Obstacle        |
-|   2     | &FF7    | Obstacle        |
-|   3     | &FF8    | Obstacle        |
-|   4     | &FF9    | Obstacle        |
-|   5     | &FFA    | Obstacle        |
+| EQU | Display | Address | Description     |
+|-----|---------|---------|-----------------|
+| dp0 |   0     | &FF5    |   ```player```  |
+| dp1 |   1     | &FF6    | Obstacle        |
+| dp2 |   2     | &FF7    | Obstacle        |
+| dp3 |   3     | &FF8    | Obstacle        |
+| dp4 |   4     | &FF9    | Obstacle        |
+| dp5 |   5     | &FFA    | Obstacle        |
 
 ---
 ### References
