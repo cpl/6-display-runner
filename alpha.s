@@ -173,18 +173,30 @@ STP
 mtop							;// MOVE PLAYER TO TOP
 			LDA	top			;// LOAD TOP POSITION
 			STA	dp5			;// SET DISPLAY TO POS
+
+			LDA sdf			;// LOAD DIFF SOUND
+			STA	bzz			;// PLAY DIFF SOUND
+
 			JMP	skip
 
 STP
 mmid							;// MOVE PLAYER TO MIDDLE
 			LDA	mid			;// LOAD MIDDLE POSITION
 			STA	dp5			;// SET DISPLAY TO POS
+
+			LDA smd			;// LOAD MIDDLE SOUND
+			STA	bzz			;// PLAY MIDDLE SOUND
+
 			JMP	skip
 
 STP
 mbot							;// MOVE PLAYER TO BOTTOM
 			LDA	bot			;// LOAD BOTTOM POSITION
 			STA	dp5			;// SET DISPLAY TO POS
+
+			LDA sdf			;// LOAD DIFF SOUND
+			STA	bzz			;// PLAY DIFF SOUND
+
 			JMP	skip
 
 
@@ -240,6 +252,9 @@ dsc		DEFW	&0000	;// DISPLAY SEQUENCE COUNT
 
 spr		DEFW	0b1000010001001000	;// RESET
 sht		DEFW	0b1000010000010001	;// HALT
+
+sdf		DEFW	0b1000001000010110	;// DIFF
+smd		DEFW	0b1000001001110110	;// MIDDLE
 ;//						m___ddddoooonnnn
 ;//
 ;//						m - mode
