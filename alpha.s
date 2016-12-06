@@ -136,6 +136,7 @@ halt
 
 STP
 mrst							;// RESET/STOP THE PROGRAM
+
 			LDA nul			;// LOAD NULL
 
 			STA	dp0			;// RESET DISPLAY 0
@@ -147,8 +148,14 @@ mrst							;// RESET/STOP THE PROGRAM
 
 			STA	dbg			;// RESET BAR GRAPH
 
+			LDA	spr			;// LOAD POS SOUND
+			STA	bzz			;// STORE IN BUZZER
+
 			LDA	hlt			;//	LOAD STOP SIGNAL
 			JNE	runt		;//	START THE PROGRAM
+
+			LDA	sht			;// LOAD HALT SOUND
+			STA	bzz			;// STORE IN BUZZER
 
 			STP					;// STOP THE PROGRAM
 
@@ -229,6 +236,17 @@ tmp		DEFW	&0000	;// TEMPROARY VARIABLE
 spc		DEFW	&0000	;// SEQUENCE PROGRAM COUNT
 dsc		DEFW	&0000	;// DISPLAY SEQUENCE COUNT
 
+;//		|	AUDIO AND BUZZER 										|
+
+spr		DEFW	0b1000010001001000	;// RESET
+sht		DEFW	0b1000010000010001	;// HALT
+;//						m___ddddoooonnnn
+;//
+;//						m - mode
+;//						d - duration
+;//						o - octave
+;//						n - note
+
 ;// 	|-------------------------------------|
 ;// 	| COMPILER DEFINED CONSTANTS          |
 ;//		|-------------------------------------|
@@ -236,19 +254,23 @@ dsc		DEFW	&0000	;// DISPLAY SEQUENCE COUNT
 ;//		|	OUTPUTS															|
 
 dp0		EQU		&FF5	;// CONSTANT DISPLAY 0
-dp1		EQU		&FF6	;// CONSTANT DISPLAY 0
-dp2		EQU		&FF7	;// CONSTANT DISPLAY 0
-dp3		EQU		&FF8	;// CONSTANT DISPLAY 0
-dp4		EQU		&FF9	;// CONSTANT DISPLAY 0
-dp5		EQU		&FFA	;// CONSTANT DISPLAY 0
+dp1		EQU		&FF6	;// CONSTANT DISPLAY 1
+dp2		EQU		&FF7	;// CONSTANT DISPLAY 2
+dp3		EQU		&FF8	;// CONSTANT DISPLAY 3
+dp4		EQU		&FF9	;// CONSTANT DISPLAY 4
+dp5		EQU		&FFA	;// CONSTANT DISPLAY 5
 
 dbg		EQU		&FFE	;// CONSTANT BAR GRAPH
+
+bzz		EQU		&FFD	;// BUZZER INPUT SOUND
 
 ;//		| INPUTS															|
 
 kr1		EQU		&FEF	;// KEY ROW 1
 kr4		EQU		&FF2	;// KEY ROW 4
 ksw		EQU		&FEE	;// SWITCHES
+
+bzb		EQU		&FF3	;// BUZZER BUSY
 
 ;//		|-------------------------------------|
 ;//		| SOURCE CODE STOPS HERE              |
