@@ -41,15 +41,15 @@ menu						;// LOOP FOR USER START (C)
 
 load						;// START WAITING TIME
 
-			LDA dlc		;// LOAD GLOBAL COUNT
+			LDA	dlc		;// LOAD GLOBAL COUNT
 			STA	tmp		;// STORE LOCAL COUNT
 ldc
 			LDA	dly		;// LOAD DELAY TIME
-ldl0	SUB one		;// COUNT DOWN
+ldl0	SUB	one		;// COUNT DOWN
 			JNE	ldl0	;// LOOP
 			LDA	tmp		;// LOAD DELAY COUNT
-			SUB one		;// COUNT DOWN
-			STA dbg		;// UPDATE GRAPH BAR
+			SUB	one		;// COUNT DOWN
+			STA	dbg		;// UPDATE GRAPH BAR
 			STA	tmp		;// STORE COUNT
 			JNE	ldc		;// DELAY MORE
 
@@ -57,22 +57,26 @@ ldl0	SUB one		;// COUNT DOWN
 ;// 	| SKIP, LOADING TIME					        |
 ;// 	|-------------------------------------|
 
-skip						;// IF NO INPUT, DELAY AND SKIP
+skip						;// IF NO INPUT, DELAY, SKIP
 
-			LDA dlp		;// LOAD GLOBAL COUNT
-			STA tmp		;// STORE LOCAL COUNT
+			LDA	dlp		;// LOAD GLOBAL COUNT
+			STA	tmp		;// STORE LOCAL COUNT
 ldp
 			LDA	dly		;// LOAD DELAY TIME
-ldl1	SUB one		;// COUNT DOWN
-			JNE ldl1	;// LOOP
-			LDA tmp		;// LOAD DELAY COUNT
-			SUB one		;// COUNT DOWN
-
-			;// TODO!!! - ADD BAR GRAPH UPDATE
-
+ldl1	SUB	one		;// COUNT DOWN
+			JNE	ldl1	;// LOOP
+			LDA	tmp		;// LOAD DELAY COUNT
+			SUB	one		;// COUNT DOWN
 			STA	tmp		;// STORE COUNT
-			JNE	ldp		;// DELAY MORE
 
+;//		| LOADING BAR													|
+
+			LDA	tbg		;// LOAD TEMP BAR GRAPH
+			STA	dbg		;// STORE IT TO BAR GRAPH
+			ADD one		;// COUNT UP
+			STA tbg		;// STORE TO TEMP BAR GRAPH
+
+			JNE	ldp		;// DELAY MORE
 
 ;// 	|-------------------------------------|
 ;// 	| SCAN FOR USER INPUT					        |
@@ -80,39 +84,38 @@ ldl1	SUB one		;// COUNT DOWN
 
 input						;// LOOP FOR USER INPUT
 
-
 			LDA	kr1		;// CHECK KEYROW 1
 			SUB	kst		;// CHECK FOR AC
 			JNE	s0		;// CHECK NON ZERO
 			JGE	halt	;// CALL HALT
 s0
 
-			LDA	kr4	  ;// CHECK KEYROW 4
-			SUB	krt	  ;// CHECK RESET
-			JNE	s1	  ;// CHECK NOT ZERO
-			JGE	mrst  ;// RESET BOARD
+			LDA	kr4		;// CHECK KEYROW 4
+			SUB	krt		;// CHECK RESET
+			JNE	s1		;// CHECK NOT ZERO
+			JGE	mrst	;// RESET BOARD
 s1
 
 			LDA	ksw		;// CHECK SWITCHES
-			SUB	mmv	  ;// CHECK SWITCH 1,2
-			JNE	s2	  ;// CHECK NON ZERO
-			JGE	mmid  ;// MOVE mid
+			SUB	mmv		;// CHECK SWITCH 1,2
+			JNE	s2		;// CHECK NON ZERO
+			JGE	mmid	;// MOVE mid
 s2
 
-			LDA	ksw	  ;// CHECK SWITCHES
-			SUB	bmv	  ;// CHECK SWITCH 2
-			JNE	s3	  ;// CHECK NON ZERO
-			JGE	mbot  ;// MOVE bot
+			LDA	ksw		;// CHECK SWITCHES
+			SUB	bmv		;// CHECK SWITCH 2
+			JNE	s3		;// CHECK NON ZERO
+			JGE	mbot	;// MOVE bot
 s3
 
-			LDA	ksw  	;// CHECK SWITCHES
-			SUB	tmv	  ;// CHECK FOR SWITCH 1
-			JNE	s4	  ;// CHECK NON ZERO
+			LDA	ksw		;// CHECK SWITCHES
+			SUB	tmv		;// CHECK FOR SWITCH 1
+			JNE	s4		;// CHECK NON ZERO
 			JGE	mtop	;// MOVE top
 s4
 
-
 			JMP	mmid	;// IF NOT INPUT, STAY MID
+								;// THEN CHECK FOR NEW INPUT
 
 ;// 	|-------------------------------------|
 ;// 	| HALT												        |
@@ -208,19 +211,24 @@ ksf		DEFW	&0040	;// KEYROW 4, SHIFT
 ;//		|	SWITCHES														|
 
 tmv		DEFW	&0001	;// SWITCH 1
-bmv		DEFW	&0002	;//	SWITCH 2
-mmv		DEFW	&0003	;//	SWITCH 1 & SWITCH 2
+bmv		DEFW	&0002	;// SWITCH 2
+mmv		DEFW	&0003	;// SWITCH 1 & SWITCH 2
 
 ;//		| DELAYS															|
 
-dly		DEFW	50000	;//	INNER DELAY TIME
+dly		DEFW	50000	;// INNER DELAY TIME
 dlc		DEFW	00016	;// WAIT FOR N SECONDS
 dlp		DEFW	00003	;// WAIT FOR INPUT
 
 ;//		|	TEMPORARY STORAGE	VARIABLES					|
 
-bgt		DEFW	&0000	;// TEMPORARY BAR GRAPH
-tmp		DEFW	&0000	;//	TEMPROARY VARIABLE
+tbg		DEFW	&0001	;// TEMPORARY BAR GRAPH
+tmp		DEFW	&0000	;// TEMPROARY VARIABLE
+
+;//		|	PROGRAM COUNTERS										|
+
+spc		DEFW	&0000	;// SEQUENCE PROGRAM COUNT
+dsc		DEFW	&0000	;// DISPLAY SEQUENCE COUNT
 
 ;// 	|-------------------------------------|
 ;// 	| COMPILER DEFINED CONSTANTS          |
@@ -243,7 +251,43 @@ kr1		EQU		&FEF	;// KEY ROW 1
 kr4		EQU		&FF2	;// KEY ROW 4
 ksw		EQU		&FEE	;// SWITCHES
 
-
 ;//		|-------------------------------------|
 ;//		| SOURCE CODE STOPS HERE              |
+;// 	|-------------------------------------|
+
+;//		|-------------------------------------|
+;//		| SEQUENCE CODE BELOW                 |
+;// 	|-------------------------------------|
+
+;#pythonmark
+
+car0	DEFW	mid		;// CAR #0 MIDDLE
+car1	DEFW	top		;// CAR #1 TOP
+car2	DEFW	bot		;// CAR #2 BOTTOM
+car3	DEFW	top		;// CAR #3 TOP
+
+;#pythonmark
+
+sequence					;// SEQUENCE STARTS BELOW
+
+lpc		LDA	spc			;// LOAD SEQUENCE COUNTER
+
+
+
+lsc		LDA	dsc			;// LOAD DISPLAY SEQ COUNT
+
+
+
+sed								;// SEQUENCE END
+
+			LDA spc			;// LOAD COUNT
+			ADD one			;// COUNT UP
+			STA spc			;// STORE COUNT
+
+			LDA dsc			;// LOAD COUNT
+			ADD one			;// COUNT UP
+			STA dsc			;// STORE COUNT
+
+;//		|-------------------------------------|
+;//		| SEQUENCE CODE ABOVE                 |
 ;// 	|-------------------------------------|
