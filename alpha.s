@@ -49,8 +49,15 @@ ldl0	SUB	one		;// COUNT DOWN
 			JNE	ldl0	;// LOOP
 			LDA	tmp		;// LOAD DELAY COUNT
 			SUB	one		;// COUNT DOWN
-			STA	dbg		;// UPDATE GRAPH BAR
 			STA	tmp		;// STORE COUNT
+
+;//		| LOADING BAR													|
+
+			LDA	tbg		;// LOAD TEMP BAR GRAPH
+			STA	dbg		;// STORE IT TO BAR GRAPH
+			ADD tbg		;// COUNT UP
+			STA tbg		;// STORE TO TEMP BAR GRAPH
+
 			JNE	ldc		;// DELAY MORE
 
 ;// 	|-------------------------------------|
@@ -68,14 +75,6 @@ ldl1	SUB	one		;// COUNT DOWN
 			LDA	tmp		;// LOAD DELAY COUNT
 			SUB	one		;// COUNT DOWN
 			STA	tmp		;// STORE COUNT
-
-;//		| LOADING BAR													|
-
-			LDA	tbg		;// LOAD TEMP BAR GRAPH
-			STA	dbg		;// STORE IT TO BAR GRAPH
-			ADD one		;// COUNT UP
-			STA tbg		;// STORE TO TEMP BAR GRAPH
-
 			JNE	ldp		;// DELAY MORE
 
 ;// 	|-------------------------------------|
@@ -217,7 +216,7 @@ mmv		DEFW	&0003	;// SWITCH 1 & SWITCH 2
 ;//		| DELAYS															|
 
 dly		DEFW	50000	;// INNER DELAY TIME
-dlc		DEFW	00016	;// WAIT FOR N SECONDS
+dlc		DEFW	00008	;// WAIT FOR N SECONDS
 dlp		DEFW	00003	;// WAIT FOR INPUT
 
 ;//		|	TEMPORARY STORAGE	VARIABLES					|
