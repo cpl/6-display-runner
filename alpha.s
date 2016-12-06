@@ -262,9 +262,7 @@ shift							;// MOVE dp3-0 TO THE LEFT
 			STA dp0
 
 			JMP mcemp		;// SPAWN NEXT
-nem
-
-			JMP	s5			;// CONTINUE
+nem		JMP	s5			;// CONTINUE
 
 STP
 mcemp							;// CHECK FOR EMPTY SCREEN
@@ -280,10 +278,7 @@ mcemp							;// CHECK FOR EMPTY SCREEN
 			LDA	dp4			;// LOAD DP4
 			JNE nem			;// break
 
-			LDA top			;// LOAD TOP
-			STA dp0			;// WRITE TOP
-
-			JMP nem			;// DONE
+			JMP	sequence	;// NEXT IN SEQUENCE
 
 STP
 mhit							;// PLAYER GOT HIT
@@ -346,8 +341,11 @@ tmp		DEFW	&0000	;// TEMPROARY VARIABLE
 
 ;//		|	PROGRAM COUNTERS										|
 
+sqc		DEFW	&0005	;// SEQUENCE COUNTER
 
+;//		|	OP CODES														|
 
+jop		DEFW	&4000	;// JMP INSTRUCTION
 
 ;//		|	AUDIO AND BUZZER 										|
 
@@ -398,20 +396,54 @@ STP								;// SAFTEY STOP
 ;//		| SEQUENCE CODE BELOW                 |
 ;// 	|-------------------------------------|
 
+;#pythonmarker
+car0
+			LDA top
+			STA dp0
+			LDA sqc
+			ADD one
+			STA sqc
+			JMP nem
+car1
+			LDA mid
+			STA dp0
+			LDA sqc
+			ADD one
+			STA sqc
+			JMP nem
+car2
+			LDA mid
+			STA dp0
+			LDA sqc
+			ADD one
+			STA sqc
+			JMP nem
+car3
+			LDA bot
+			STA dp0
+			LDA sqc
+			ADD one
+			STA sqc
+			JMP nem
+;#pythonmarker
 
 
+sequence					;// START SEQUENCE
 
+jsq		DEFW	&0000
 
+spc		LDA spc			;// LOAD SEQ PC
+			ADD	sqc
+			ADD jop
+			STA jsq
+			JMP jsq
 
+			JMP car0
+			JMP car1
+			JMP car2
+			JMP car3
 
-
-
-
-
-
-
-
-
+			JMP	nem			;// GO BACK
 
 STP								;// SAFTEY STOP
 
