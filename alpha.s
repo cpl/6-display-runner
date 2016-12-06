@@ -29,6 +29,9 @@ runt						;// START PROGRAM RUNTIME
 ;// 	| WAIT FOR START INPUT (C)		        |
 ;// 	|-------------------------------------|
 
+LDA top
+STA dp0
+
 menu						;// LOOP FOR USER START (C)
 			LDA	kr1		;// CHECK INPUT KEYROW 1
 			SUB	ksa		;// CHECK INPUT KEYROW 1 START
@@ -65,6 +68,9 @@ ldl0	SUB	one		;// COUNT DOWN
 ;// 	|-------------------------------------|
 
 skip						;// IF NO INPUT, DELAY, SKIP
+
+			JMP	shift	;// SHIFT DISPLAY TO THE LEFT
+s5							;// SHIFT IS DONE, CONTINUE
 
 			LDA	dlp		;// LOAD GLOBAL COUNT
 			STA	tmp		;// STORE LOCAL COUNT
@@ -199,6 +205,23 @@ mbot							;// MOVE PLAYER TO BOTTOM
 
 			JMP	skip
 
+STP
+shift							;// MOVE dp3-0 TO THE LEFT
+
+			LDA	dp3			;// MOVE dp3 TO THE LEFT
+			STA	dp4
+			LDA	dp2			;// MOVE dp2 TO THE LEFT
+			STA	dp3
+			LDA	dp1			;// MOVE dp1 TO THE LEFT
+			STA	dp2
+			LDA	dp0			;// MOVE dp0 TO THE LEFT
+			STA	dp1
+
+			LDA nul
+			STA dp0
+
+			JMP	s5
+
 
 ;// 	|-------------------------------------|
 ;// 	| PROGRAM MEMORY ALOCATION            |
@@ -324,6 +347,9 @@ sed								;// SEQUENCE END
 			ADD one			;// COUNT UP
 			STA dsc			;// STORE COUNT
 
+			JMP	skip		;// GO TO SKIP
+
+STP								;// SAFTEY STOP
 ;//		|-------------------------------------|
 ;//		| SEQUENCE CODE ABOVE                 |
 ;// 	|-------------------------------------|
