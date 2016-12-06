@@ -6,7 +6,7 @@
 ;// 	|  LICENSE: MIT                       |
 ;// 	|                                     |
 ;// 	|  STARTED ON : 28/11/2016            |
-;// 	|  LAST EDIT  : XX/11/2016            |
+;// 	|  LAST EDIT  : 06/12/2016            |
 ;// 	|                                     |
 ;// 	|-------------------------------------|
 
@@ -28,9 +28,6 @@ runt						;// START PROGRAM RUNTIME
 ;// 	|-------------------------------------|
 ;// 	| WAIT FOR START INPUT (C)		        |
 ;// 	|-------------------------------------|
-
-LDA top
-STA dp0
 
 menu						;// LOOP FOR USER START (C)
 			LDA	kr1		;// CHECK INPUT KEYROW 1
@@ -89,11 +86,15 @@ ldl1	SUB	one		;// COUNT DOWN
 
 input						;// LOOP FOR USER INPUT
 
+;//		| CHECK FOR STOP SIGNAL               |
+
 			LDA	kr1		;// CHECK KEYROW 1
 			SUB	kst		;// CHECK FOR AC
 			JNE	s0		;// CHECK NON ZERO
 			JGE	halt	;// CALL HALT
 s0
+
+;//		| CHECK FOR RESET SIGNAL              |
 
 			LDA	kr4		;// CHECK KEYROW 4
 			SUB	krt		;// CHECK RESET
@@ -101,11 +102,15 @@ s0
 			JGE	mrst	;// RESET BOARD
 s1
 
+;//		| PLAYER MOVE - MID                   |
+
 			LDA	ksw		;// CHECK SWITCHES
 			SUB	mmv		;// CHECK SWITCH 1,2
 			JNE	s2		;// CHECK NON ZERO
 			JGE	mmid	;// MOVE mid
 s2
+
+;//		| PLAYER MOVE - BOT                   |
 
 			LDA	ksw		;// CHECK SWITCHES
 			SUB	bmv		;// CHECK SWITCH 2
@@ -113,14 +118,40 @@ s2
 			JGE	mbot	;// MOVE bot
 s3
 
+;//		| PLAYER MOVE - TOP                   |
+
 			LDA	ksw		;// CHECK SWITCHES
 			SUB	tmv		;// CHECK FOR SWITCH 1
 			JNE	s4		;// CHECK NON ZERO
 			JGE	mtop	;// MOVE top
 s4
 
+;//		| SPAWN TEST MID											|
+
+			LDA kr4		;// CHECK KEYROW 4
+			SUB ksf		;// CHECK FOR SHIFT
+			JNE s7		;// NOT SHIFT
+			LDA mid		;// LOAD MID SEGMENT
+			STA dp0		;// STORE MID SEGMENT
+			JGE input	;// GET NEW INPUT
+s7
+
+;//		| PLAYER DEFAULT - MIDDLE             |
+
 			JMP	mmid	;// IF NOT INPUT, STAY MID
-								;// THEN CHECK FOR NEW INPUT
+s8
+
+;//		| COLLISION CHECK                			|
+
+			LDA	dp4		;// CHECK DISPLAY4
+			SUB	dp5		;// CHECK PLAYER
+			JNE	s6		;// DODGE
+			JGE	mrst	;// GAME OVER
+s6
+
+;//		| NO INPUT, SKIP AND DELAY		   			|
+
+			JMP skip
 
 ;// 	|-------------------------------------|
 ;// 	| HALT												        |
@@ -193,7 +224,7 @@ mmid							;// MOVE PLAYER TO MIDDLE
 			LDA smd			;// LOAD MIDDLE SOUND
 			STA	bzz			;// PLAY MIDDLE SOUND
 
-			JMP	skip
+			JMP	s8
 
 STP
 mbot							;// MOVE PLAYER TO BOTTOM
@@ -221,7 +252,6 @@ shift							;// MOVE dp3-0 TO THE LEFT
 			STA dp0
 
 			JMP	s5
-
 
 ;// 	|-------------------------------------|
 ;// 	| PROGRAM MEMORY ALOCATION            |
@@ -310,6 +340,7 @@ ksw		EQU		&FEE	;// SWITCHES
 
 bzb		EQU		&FF3	;// BUZZER BUSY
 
+STP								;// SAFTEY STOP
 ;//		|-------------------------------------|
 ;//		| SOURCE CODE STOPS HERE              |
 ;// 	|-------------------------------------|
