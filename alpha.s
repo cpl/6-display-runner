@@ -131,7 +131,7 @@ s4
 			LDA kr4		;// CHECK KEYROW 4
 			SUB ksf		;// CHECK FOR SHIFT
 			JNE s7		;// NOT SHIFT
-			LDA mid		;// LOAD MID SEGMENT
+			LDA car0	;// LOAD MID SEGMENT
 			STA dp0		;// STORE MID SEGMENT
 			JGE input	;// GET NEW INPUT
 s7
@@ -183,6 +183,7 @@ mrst							;// RESET/STOP THE PROGRAM
 			STA	dp4			;// RESET DISPLAY 4
 			STA	dp5			;// RESET DISPLAY 5
 
+			LDA fff			;// LOAD FULL BG
 			STA	dbg			;// RESET BAR GRAPH
 
 			LDA	spr			;// LOAD POS SOUND
@@ -193,6 +194,9 @@ mrst							;// RESET/STOP THE PROGRAM
 
 			LDA	sht			;// LOAD HALT SOUND
 			STA	bzz			;// STORE IN BUZZER
+
+			LDA nul			;// LAOD NULL
+			STA	dbg			;// RESET BAR GRAPH
 
 			STP					;// STOP THE PROGRAM
 
@@ -262,6 +266,8 @@ shift							;// MOVE dp3-0 TO THE LEFT
 top		DEFW	&0001	;//	DISPLAY: 0000_0001
 mid		DEFW	&0002	;//	DISPLAY: 0100_0000
 bot		DEFW	&0003	;// DISPLAY: 0000_1000
+
+fff		DEFW	0b11111111	;// BAR GRAPH FULL
 
 ;//		| DECIMALS														|
 
@@ -341,6 +347,7 @@ ksw		EQU		&FEE	;// SWITCHES
 bzb		EQU		&FF3	;// BUZZER BUSY
 
 STP								;// SAFTEY STOP
+
 ;//		|-------------------------------------|
 ;//		| SOURCE CODE STOPS HERE              |
 ;// 	|-------------------------------------|
@@ -351,10 +358,10 @@ STP								;// SAFTEY STOP
 
 ;#pythonmark
 
-car0	DEFW	mid		;// CAR #0 MIDDLE
-car1	DEFW	top		;// CAR #1 TOP
-car2	DEFW	bot		;// CAR #2 BOTTOM
-car3	DEFW	top		;// CAR #3 TOP
+car0	EQU		mid		;// CAR #0 MIDDLE
+car1	EQU		top		;// CAR #1 TOP
+car2	EQU		bot		;// CAR #2 BOTTOM
+car3	EQU		top		;// CAR #3 TOP
 
 ;#pythonmark
 
@@ -381,6 +388,7 @@ sed								;// SEQUENCE END
 			JMP	skip		;// GO TO SKIP
 
 STP								;// SAFTEY STOP
+
 ;//		|-------------------------------------|
 ;//		| SEQUENCE CODE ABOVE                 |
 ;// 	|-------------------------------------|
