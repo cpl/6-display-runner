@@ -106,8 +106,8 @@ s1
 ;//		| COLLISION CHECK                			|
 
 			LDA	dp5		;// CHECK PLAYER
-			JNE s9
-			JMP s6
+			JNE s9		;// OK PLAYER
+			JMP s6		;// PLAYER IS NULL
 s9
 			SUB	dp4		;// CHECK NEXT
 			JNE	s6		;// DODGE
@@ -143,7 +143,7 @@ s4
 			LDA kr4		;// CHECK KEYROW 4
 			SUB ksf		;// CHECK FOR SHIFT
 			JNE s7		;// NOT SHIFT
-			LDA car0	;// LOAD MID SEGMENT
+			LDA mid		;// LOAD MID SEGMENT
 			STA dp0		;// STORE MID SEGMENT
 			;JGE input;// CONTINUE
 s7
@@ -199,7 +199,7 @@ mrst							;// RESET/STOP THE PROGRAM
 			LDA	sht			;// LOAD HALT SOUND
 			STA	bzz			;// STORE IN BUZZER
 
-			LDA nul			;// LAOD NULL
+			LDA nul			;// LOAD NULL
 			STA	dbg			;// RESET BAR GRAPH
 
 			STP					;// STOP THE PROGRAM
@@ -213,6 +213,8 @@ mlal							;// SET ALL DISPLAYS TO ACC
 			STA	dp4			;// SET DISPLAY 4
 			STA	dp5			;// SET DISPLAY 5
 			STA	dbg			;// SET BAR GRAPH
+
+			JMP skip		;// CONTINUE
 
 STP
 mtop							;// MOVE PLAYER TO TOP
@@ -344,8 +346,8 @@ tmp		DEFW	&0000	;// TEMPROARY VARIABLE
 
 ;//		|	PROGRAM COUNTERS										|
 
-spc		DEFW	&0000	;// SEQUENCE PROGRAM COUNT
-dsc		DEFW	&0000	;// DISPLAY SEQUENCE COUNT
+
+
 
 ;//		|	AUDIO AND BUZZER 										|
 
@@ -396,36 +398,20 @@ STP								;// SAFTEY STOP
 ;//		| SEQUENCE CODE BELOW                 |
 ;// 	|-------------------------------------|
 
-;#pythonmark
-
-car0	EQU		mid		;// CAR #0 MIDDLE
-car1	EQU		top		;// CAR #1 TOP
-car2	EQU		bot		;// CAR #2 BOTTOM
-car3	EQU		top		;// CAR #3 TOP
-
-;#pythonmark
-
-sequence					;// SEQUENCE STARTS BELOW
-
-lpc		LDA	spc			;// LOAD SEQUENCE COUNTER
 
 
 
-lsc		LDA	dsc			;// LOAD DISPLAY SEQ COUNT
 
 
 
-sed								;// SEQUENCE END
 
-			LDA spc			;// LOAD COUNT
-			ADD one			;// COUNT UP
-			STA spc			;// STORE COUNT
 
-			LDA dsc			;// LOAD COUNT
-			ADD one			;// COUNT UP
-			STA dsc			;// STORE COUNT
 
-			JMP	skip		;// GO TO SKIP
+
+
+
+
+
 
 STP								;// SAFTEY STOP
 
