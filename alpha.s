@@ -10,7 +10,6 @@
 ;// 	|                                     |
 ;// 	|-------------------------------------|
 
-
 ;//		|-------------------------------------|
 ;//		| SOURCE CODE BEGINS BELOW            |
 ;// 	|-------------------------------------|
@@ -64,6 +63,8 @@ ldl0	SUB	one		;// COUNT DOWN
 ;// 	| SKIP, LOADING TIME					        |
 ;// 	|-------------------------------------|
 
+			JMP input	;// SKIP SKIP, TAKE INPUT
+
 skip						;// IF NO INPUT, DELAY, SKIP
 
 			JMP	shift	;// SHIFT DISPLAY TO THE LEFT
@@ -102,6 +103,17 @@ s0
 			JGE	mrst	;// RESET BOARD
 s1
 
+;//		| COLLISION CHECK                			|
+
+			LDA	dp5		;// CHECK PLAYER
+			JNE s9
+			JMP s6
+s9
+			SUB	dp4		;// CHECK NEXT
+			JNE	s6		;// DODGE
+			JGE	mrst	;// GET HIT
+s6
+
 ;//		| PLAYER MOVE - MID                   |
 
 			LDA	ksw		;// CHECK SWITCHES
@@ -133,21 +145,13 @@ s4
 			JNE s7		;// NOT SHIFT
 			LDA car0	;// LOAD MID SEGMENT
 			STA dp0		;// STORE MID SEGMENT
-			JGE input	;// GET NEW INPUT
+			;JGE input;// CONTINUE
 s7
 
-;//		| PLAYER DEFAULT - MIDDLE             |
+;//		| PLAYER DEFAULT - MIDDLE              |
 
 			JMP	mmid	;// IF NOT INPUT, STAY MID
 s8
-
-;//		| COLLISION CHECK                			|
-
-			LDA	dp4		;// CHECK DISPLAY4
-			SUB	dp5		;// CHECK PLAYER
-			JNE	s6		;// DODGE
-			JGE	mrst	;// GAME OVER
-s6
 
 ;//		| NO INPUT, SKIP AND DELAY		   			|
 
@@ -252,10 +256,44 @@ shift							;// MOVE dp3-0 TO THE LEFT
 			LDA	dp0			;// MOVE dp0 TO THE LEFT
 			STA	dp1
 
-			LDA nul
+			LDA nul			;// EMPTY FIRST
 			STA dp0
 
-			JMP	s5
+			JMP mcemp		;// SPAWN NEXT
+nem
+
+			JMP	s5			;// CONTINUE
+
+STP
+mcemp							;// CHECK FOR EMPTY SCREEN
+
+			LDA	dp0			;// LOAD DP0
+			JNE nem			;// break
+			LDA	dp1			;// LOAD DP1
+			JNE nem			;// break
+			LDA	dp2			;// LOAD DP2
+			JNE nem			;// break
+			LDA	dp3			;// LOAD DP3
+			JNE nem			;// break
+			LDA	dp4			;// LOAD DP4
+			JNE nem			;// break
+
+			LDA top			;// LOAD TOP
+			STA dp0			;// WRITE TOP
+
+			JMP nem			;// DONE
+
+STP
+mhit							;// PLAYER GOT HIT
+
+			LDA php			;// LOAD HEALTH
+			SUB one			;// TAKE DAMAGE
+
+			STA php			;// SET NEW HEALTH
+			STA	dbg			;// SET BAR GRAPH
+
+			JNE skip		;// CONTINUE
+			JGE	mrst		;// GAME OVER
 
 ;// 	|-------------------------------------|
 ;// 	| PROGRAM MEMORY ALOCATION            |
@@ -267,7 +305,9 @@ top		DEFW	&0001	;//	DISPLAY: 0000_0001
 mid		DEFW	&0002	;//	DISPLAY: 0100_0000
 bot		DEFW	&0003	;// DISPLAY: 0000_1000
 
-fff		DEFW	0b11111111	;// BAR GRAPH FULL
+fff		DEFW	&FF		;// BAR GRAPH FULL
+
+php		DEFW	0b00001000	;// PLAYER HEALTH
 
 ;//		| DECIMALS														|
 
