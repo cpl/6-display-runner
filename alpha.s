@@ -28,11 +28,37 @@ runt							;// START PROGRAM RUNTIME
 ;// 	| WAIT FOR START INPUT (C)		        |
 ;// 	|-------------------------------------|
 
-menu							;// LOOP FOR USER START (C)
-			LDA	kr1			;// CHECK INPUT KEYROW 1
-			SUB	ksa			;// CHECK INPUT KEYROW 1 START
-			JNE	menu		;// LOOP menu
-			JGE	load		;// START LOADING TIME
+menu							;// LOOP FOR USER START (DIF 1,2,X)
+
+			LDA	kr3			;// CHECK KEYROW 3
+			SUB	df1			;// CHECK DIF 1
+			JNE	me1			;// NOT
+			LDA kr3			;// STORE IT
+			STA dff
+			JGE	load		;// LOAD
+
+me1		LDA	kr3			;// CHECK KEYROW 3
+			SUB df2			;// CHECK DIF 2
+			JNE me2			;// NOT
+			LDA kr3			;// STORE IT
+			STA dff
+			JGE load		;// LOAD
+
+me2		LDA	kr3			;// CHECK KEYROW 3
+			SUB dfx			;// CHECK DIF X
+			JNE me3			;// NOT
+			LDA kr3			;// STORE IT
+			STA dff
+			JGE load		;// LOAD
+
+me3		LDA	kr3			;// CHECK KEYROW 3
+			SUB df3			;// CHECK DIF 3
+			JNE menu		;// NOT, LOOP AGAIN
+			LDA kr3			;// STORE IT
+			STA dff
+			JGE load		;// LOAD
+
+			JMP menu
 
 ;// 	|-------------------------------------|
 ;// 	| PASS LOADING TIME						        |
@@ -267,16 +293,52 @@ nem		JMP	s5			;// CONTINUE
 STP
 mcemp							;// CHECK FOR EMPTY SCREEN
 
-			LDA	dp0			;// LOAD DP0
-			JNE nem			;// break
-			LDA	dp1			;// LOAD DP1
-			JNE nem			;// break
-			;LDA	dp2		;// LOAD DP2
-			;JNE nem		;// break
-			LDA	dp3			;// LOAD DP3
-			JNE nem			;// break
-			;LDA	dp4		;// LOAD DP4
-			;JNE nem		;// break
+
+			LDA dff			;// CHECK DIFFICULTY X
+			SUB dfx			;// CHECK IF X
+			JNE ndx			;// NOT X
+			JMP sequence;// DIF X
+
+ndx		LDA dff			;// CHECK DIFFICULTY 3
+			SUB df3
+			JNE nd3
+
+			LDA dp0			;// CHECK DISPLAY
+			JNE nem
+			LDA dp1
+			JNE nem
+			LDA dp3
+			JNE nem
+
+			JMP sequence
+
+nd3		LDA dff			;// CHECK DIFFICULTY 2
+			SUB df2
+			JNE nd2
+
+			LDA dp0			;// CHECK DISPLAY
+			JNE nem
+			LDA dp1
+			JNE nem
+			LDA dp2
+			JNE nem
+
+			JMP sequence
+
+nd2		LDA dff			;// CHECK DIFFICULTY 1
+			SUB df1
+			JNE sequence
+
+			LDA dp0
+			JNE nem
+			LDA dp1
+			JNE nem
+			LDA dp2
+			JNE nem
+			LDA dp3
+			JNE nem
+			LDA dp4
+			JNE nem
 
 			JMP	sequence	;// NEXT IN SEQUENCE
 
@@ -323,6 +385,11 @@ kst		DEFW	&0002	;// KEYROW 1, AC
 ksa		DEFW	&0004	;// KEYROW 1, C
 ksf		DEFW	&0040	;// KEYROW 4, SHIFT
 
+df1		DEFW	&0020	;// DIFFICULTY 1
+df2		DEFW	&0010	;// DIFFICULTY 2
+df3		DEFW	&0008	;// DIFFICULTY 3
+dfx		DEFW	&0004 ;// DIFFICULTY X
+
 ;//		|	SWITCHES														|
 
 tmv		DEFW	&0001	;// SWITCH 1
@@ -344,6 +411,7 @@ tmp		DEFW	&0000	;// TEMPROARY VARIABLE
 
 sqc		DEFW	&0000	;// SEQUENCE COUNTER
 sma		DEFW	&0006	;// SEQUENCE SIZE
+dff		DEFW	&0000	;// DIFFICULTY
 
 ;//		|	OP CODES														|
 
@@ -384,6 +452,7 @@ bzz		EQU		&FFD	;// BUZZER INPUT SOUND
 ;//		| INPUTS															|
 
 kr1		EQU		&FEF	;// KEY ROW 1
+kr3		EQU		&FF1	;// KEY ROW 3
 kr4		EQU		&FF2	;// KEY ROW 4
 ksw		EQU		&FEE	;// SWITCHES
 
