@@ -4,10 +4,7 @@
 
 ---
 ### Description
-A short description about what the program does and the inspiration behind it.
-
-
-
+The game was inspired by the old games, usually found on cheap devices for "gaming". The purpose of the game is to dodge the incoming "cars" by moving up or down. There are four difficulties randing from ```EASY``` to ```IMPOSSIBLE```. You can get hit 3 times as there is a health system (displayed on the ```bar graph```). The game also has background sounds and diffrent sounds for each action.
 
 ---
 ### Specifications
@@ -30,28 +27,27 @@ MU0 Has a small limited set of instructions.
 
 
 #### COMP12111 - Lab FGPA Board
+
+![fgpa](https://i.imgur.com/eAvww7o.png "Board")
+
 The following memory locations have been alocated for accessing the ```FGPA Board``` features:
 
 | EQU | Feature       | Address       | Description                                                                       |
 |-----|:------------- |:--------------|-----------------------------------------------------------------------------------|
 | kr1 | KeyRow 1      | &FEF          | Using the ```AC``` button for sending the ```KILL``` signal to the system.        |
+| kr3 | KeyRow 3      | &FF1          | Using the `1` `2` `3` `X` buttons for choosing difficulty.                        |
 | kr4 | KeyRow 4      | &FF2          | Using the ```RESET``` button to ```FLUSH``` the displays and ```SHIFT```for tests.|
 | ksw | Switch        | &FEE          | Using the two switches for moving the ```player``` (```display5```) up or down.   |
-|  ?  | Buzzer Input  | &FFD          | Used for playing "music".                                                         |
-|  ?  | Buzzer Busy   | &FF3          | Decide if buzzer can play the next sound.                                         |
+| bzz | Buzzer Input  | &FFD          | Used for playing "music".                                                         |
+| bsy | Buzzer Busy   | &FF3          | Decide if buzzer can play the next sound.                                         |
 | dgb | Graph Bar     | &FFE          | Display loading times.                                                            |
-|  ?  | S6 LEDS       | &FF4          | ?                                                                                 |
-|  ?  | Board LED     | &FFC          | ?                                                                                 |
 
 | EQU | Display | Address | Description     |
 |-----|---------|---------|-----------------|
-| dp0 |   0     | &FF5    |   ```player```  |
+| dp0 |   0     | &FF5    | Obstacle        |
 | dp1 |   1     | &FF6    | Obstacle        |
 | dp2 |   2     | &FF7    | Obstacle        |
 | dp3 |   3     | &FF8    | Obstacle        |
 | dp4 |   4     | &FF9    | Obstacle        |
-| dp5 |   5     | &FFA    | Obstacle        |
+| dp5 |   5     | &FFA    | ```player```    |
 
----
-### References
-Links to references.
