@@ -85,9 +85,14 @@ ldl0	SUB	one			;// COUNT DOWN
 
 			JNE	ldc			;// DELAY MORE
 
+;//		| INIT SETUP 													|
+
 			LDA ph3			;// LOAD HP
 			STA php			;// STORE HP
 			STA dbg			;// STORE HP
+
+			LDA mid			;// LOAD PP
+			STA dp5			;// SET PLAYER
 
 ;// 	|-------------------------------------|
 ;// 	| SKIP, LOADING TIME					        |
@@ -96,9 +101,6 @@ ldl0	SUB	one			;// COUNT DOWN
 			JMP input		;// SKIP SKIP, TAKE INPUT
 
 skip							;// IF NO INPUT, DELAY, SKIP
-
-			JMP	shift		;// SHIFT DISPLAY TO THE LEFT
-s5								;// SHIFT IS DONE, CONTINUE
 
 			LDA	dlp			;// LOAD GLOBAL COUNT
 			STA	tmp			;// STORE LOCAL COUNT
@@ -110,6 +112,9 @@ ldl1	SUB	one			;// COUNT DOWN
 			SUB	one			;// COUNT DOWN
 			STA	tmp			;// STORE COUNT
 			JNE	ldp			;// DELAY MORE
+
+			JMP	shift		;// SHIFT DISPLAY TO THE LEFT
+s5								;// SHIFT IS DONE, CONTINUE
 
 ;// 	|-------------------------------------|
 ;// 	| SCAN FOR USER INPUT					        |
@@ -144,14 +149,6 @@ s9
 			JGE	mhit		;// GET HIT
 s6
 
-;//		| PLAYER MOVE - MID                   |
-
-			LDA		ksw		;// CHECK SWITCHES
-			SUB		mmv		;// CHECK SWITCH 1,2
-			JNE		s2		;// CHECK NON ZERO
-			JGE		mmid	;// MOVE mid
-s2
-
 ;//		| PLAYER MOVE - BOT                   |
 
 			LDA		ksw		;// CHECK SWITCHES
@@ -178,12 +175,7 @@ s4
 			;JGE input	;// CONTINUE
 s7
 
-;//		| PLAYER DEFAULT - MIDDLE             |
-
-			JMP	mmid		;// IF NOT INPUT, STAY MID
-s8
-
-;//		| NO INPUT, SKIP AND DELAY		   			|
+;//		| NO INPUT, SKIP AND DELAY						|
 
 			JMP skip
 
@@ -248,33 +240,43 @@ mlal							;// SET ALL DISPLAYS TO ACC
 
 STP
 mtop							;// MOVE PLAYER TO TOP
-			LDA	top			;// LOAD TOP POSITION
-			STA	dp5			;// SET DISPLAY TO POS
 
 			LDA sdu			;// LOAD DIFF SOUND
 			STA	bzz			;// PLAY DIFF SOUND
 
-			JMP	skip
+			LDA dp5			;// CHECK PLAYER POS
+			SUB bot			;// CHECK BOT
+			JNE mt1			;// NOT   BOT
+			LDA mid			;// GO TO MID
+			STA dp5
+			JMP skip		;// CONTINUE
 
-STP
-mmid							;// MOVE PLAYER TO MIDDLE
-			LDA	mid			;// LOAD MIDDLE POSITION
-			STA	dp5			;// SET DISPLAY TO POS
-
-			LDA smd			;// LOAD MIDDLE SOUND
-			STA	bzz			;// PLAY MIDDLE SOUND
-
-			JMP	s8
+mt1		LDA dp5			;// CHECK PLAYER POS
+			SUB mid			;// CHECK MID
+			JNE skip		;// NOT   MID
+			LDA top			;// GO TO TOP
+			STA dp5
+			JMP skip		;// CONTINUE
 
 STP
 mbot							;// MOVE PLAYER TO BOTTOM
-			LDA	bot			;// LOAD BOTTOM POSITION
-			STA	dp5			;// SET DISPLAY TO POS
 
-			LDA sdd			;// LOAD DIFF SOUND
+			LDA smd			;// LOAD DIFF SOUND
 			STA	bzz			;// PLAY DIFF SOUND
 
-			JMP	skip
+			LDA dp5			;// CHECK PLAYER POS
+			SUB top			;// CHECK TOP
+			JNE mt2			;// NOT   TOP
+			LDA mid			;// GO TO MID
+			STA dp5
+			JMP skip		;// CONTINUE
+
+mt2		LDA dp5			;// CHECK PLAYER POS
+			SUB mid			;// CHECK MID
+			JNE skip		;// NOT   MID
+			LDA bot			;// GO TO BOT
+			STA dp5
+			JMP skip		;// CONTINUE
 
 STP
 shift							;// MOVE dp3-0 TO THE LEFT
@@ -349,6 +351,9 @@ nd2		LDA dff			;// CHECK DIFFICULTY 1
 STP
 mhit							;// PLAYER GOT HIT
 
+			LDA	sgo
+			STA	bzz
+
 			LDA ph3
 			SUB php
 			JNE	alv1
@@ -416,7 +421,7 @@ mmv		DEFW	&0003	;// SWITCH 1 & SWITCH 2
 
 dly		DEFW	50001	;// INNER DELAY TIME
 dlc		DEFW	00007	;// WAIT FOR N SECONDS
-dlp		DEFW	00003	;// WAIT FOR INPUT
+dlp		DEFW	00002	;// WAIT FOR INPUT
 
 ;//		|	TEMPORARY STORAGE	VARIABLES					|
 
@@ -441,6 +446,8 @@ sht		DEFW	0b1000010000010001	;// HALT
 sdd		DEFW	0b1000001000010100	;// DOWN
 sdu		DEFW	0b1000001001010110	;// UP
 smd		DEFW	0b1000001000110110	;// MIDDLE
+
+sgo		DEFW	0b1000001000010000	;// HIT
 ;//						m___ddddoooonnnn
 ;//
 ;//						m - mode
