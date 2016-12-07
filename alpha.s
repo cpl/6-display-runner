@@ -6,7 +6,7 @@
 ;// 	|  LICENSE: MIT                       |
 ;// 	|                                     |
 ;// 	|  STARTED ON : 28/11/2016            |
-;// 	|  LAST EDIT  : 06/12/2016            |
+;// 	|  LAST EDIT  : 07/12/2016            |
 ;// 	|                                     |
 ;// 	|-------------------------------------|
 
@@ -18,139 +18,139 @@
 ;// 	| PROGRAM RUNTIME BEGINS BELOW        |
 ;// 	|-------------------------------------|
 
-init	ORG	0000	;// RESET MEMORY ADRESS
+init	ORG	0000		;// RESET MEMORY ADRESS
 
-			JMP	mrst	;// RESET BOARD COMPONENTS
+			JMP	mrst		;// RESET BOARD COMPONENTS
 
-runt						;// START PROGRAM RUNTIME
+runt							;// START PROGRAM RUNTIME
 
 ;// 	|-------------------------------------|
 ;// 	| WAIT FOR START INPUT (C)		        |
 ;// 	|-------------------------------------|
 
-menu						;// LOOP FOR USER START (C)
-			LDA	kr1		;// CHECK INPUT KEYROW 1
-			SUB	ksa		;// CHECK INPUT KEYROW 1 START
-			JNE	menu	;// LOOP menu
-			JGE	load	;// START LOADING TIME
+menu							;// LOOP FOR USER START (C)
+			LDA	kr1			;// CHECK INPUT KEYROW 1
+			SUB	ksa			;// CHECK INPUT KEYROW 1 START
+			JNE	menu		;// LOOP menu
+			JGE	load		;// START LOADING TIME
 
 ;// 	|-------------------------------------|
 ;// 	| PASS LOADING TIME						        |
 ;// 	|-------------------------------------|
 
-load						;// START WAITING TIME
+load							;// START WAITING TIME
 
-			LDA	dlc		;// LOAD GLOBAL COUNT
-			STA	tmp		;// STORE LOCAL COUNT
+			LDA	dlc			;// LOAD GLOBAL COUNT
+			STA	tmp			;// STORE LOCAL COUNT
 ldc
-			LDA	dly		;// LOAD DELAY TIME
-ldl0	SUB	one		;// COUNT DOWN
-			JNE	ldl0	;// LOOP
-			LDA	tmp		;// LOAD DELAY COUNT
-			SUB	one		;// COUNT DOWN
-			STA	tmp		;// STORE COUNT
+			LDA	dly			;// LOAD DELAY TIME
+ldl0	SUB	one			;// COUNT DOWN
+			JNE	ldl0		;// LOOP
+			LDA	tmp			;// LOAD DELAY COUNT
+			SUB	one			;// COUNT DOWN
+			STA	tmp			;// STORE COUNT
 
 ;//		| LOADING BAR													|
 
-			LDA	tbg		;// LOAD TEMP BAR GRAPH
-			STA	dbg		;// STORE IT TO BAR GRAPH
-			ADD tbg		;// COUNT UP
-			STA tbg		;// STORE TO TEMP BAR GRAPH
+			LDA	tbg			;// LOAD TEMP BAR GRAPH
+			STA	dbg			;// STORE IT TO BAR GRAPH
+			ADD tbg			;// COUNT UP
+			STA tbg			;// STORE TO TEMP BAR GRAPH
 
-			JNE	ldc		;// DELAY MORE
+			JNE	ldc			;// DELAY MORE
 
 ;// 	|-------------------------------------|
 ;// 	| SKIP, LOADING TIME					        |
 ;// 	|-------------------------------------|
 
-			JMP input	;// SKIP SKIP, TAKE INPUT
+			JMP input		;// SKIP SKIP, TAKE INPUT
 
-skip						;// IF NO INPUT, DELAY, SKIP
+skip							;// IF NO INPUT, DELAY, SKIP
 
-			JMP	shift	;// SHIFT DISPLAY TO THE LEFT
-s5							;// SHIFT IS DONE, CONTINUE
+			JMP	shift		;// SHIFT DISPLAY TO THE LEFT
+s5								;// SHIFT IS DONE, CONTINUE
 
-			LDA	dlp		;// LOAD GLOBAL COUNT
-			STA	tmp		;// STORE LOCAL COUNT
+			LDA	dlp			;// LOAD GLOBAL COUNT
+			STA	tmp			;// STORE LOCAL COUNT
 ldp
-			LDA	dly		;// LOAD DELAY TIME
-ldl1	SUB	one		;// COUNT DOWN
-			JNE	ldl1	;// LOOP
-			LDA	tmp		;// LOAD DELAY COUNT
-			SUB	one		;// COUNT DOWN
-			STA	tmp		;// STORE COUNT
-			JNE	ldp		;// DELAY MORE
+			LDA	dly			;// LOAD DELAY TIME
+ldl1	SUB	one			;// COUNT DOWN
+			JNE	ldl1		;// LOOP
+			LDA	tmp			;// LOAD DELAY COUNT
+			SUB	one			;// COUNT DOWN
+			STA	tmp			;// STORE COUNT
+			JNE	ldp			;// DELAY MORE
 
 ;// 	|-------------------------------------|
 ;// 	| SCAN FOR USER INPUT					        |
 ;// 	|-------------------------------------|
 
-input						;// LOOP FOR USER INPUT
+input							;// LOOP FOR USER INPUT
 
 ;//		| CHECK FOR STOP SIGNAL               |
 
-			LDA	kr1		;// CHECK KEYROW 1
-			SUB	kst		;// CHECK FOR AC
-			JNE	s0		;// CHECK NON ZERO
-			JGE	halt	;// CALL HALT
+			LDA	kr1			;// CHECK KEYROW 1
+			SUB	kst			;// CHECK FOR AC
+			JNE	s0			;// CHECK NON ZERO
+			JGE	halt		;// CALL HALT
 s0
 
 ;//		| CHECK FOR RESET SIGNAL              |
 
-			LDA	kr4		;// CHECK KEYROW 4
-			SUB	krt		;// CHECK RESET
-			JNE	s1		;// CHECK NOT ZERO
-			JGE	mrst	;// RESET BOARD
+			LDA	kr4			;// CHECK KEYROW 4
+			SUB	krt			;// CHECK RESET
+			JNE	s1			;// CHECK NOT ZERO
+			JGE	mrst		;// RESET BOARD
 s1
 
 ;//		| COLLISION CHECK                			|
 
-			LDA	dp5		;// CHECK PLAYER
-			JNE s9		;// OK PLAYER
-			JMP s6		;// PLAYER IS NULL
+			LDA	dp5			;// CHECK PLAYER
+			JNE s9			;// OK PLAYER
+			JMP s6			;// PLAYER IS NULL
 s9
-			SUB	dp4		;// CHECK NEXT
-			JNE	s6		;// DODGE
-			JGE	mrst	;// GET HIT
+			SUB	dp4			;// CHECK NEXT
+			JNE	s6			;// DODGE
+			JGE	mrst		;// GET HIT
 s6
 
 ;//		| PLAYER MOVE - MID                   |
 
-			LDA	ksw		;// CHECK SWITCHES
-			SUB	mmv		;// CHECK SWITCH 1,2
-			JNE	s2		;// CHECK NON ZERO
-			JGE	mmid	;// MOVE mid
+			LDA		ksw		;// CHECK SWITCHES
+			SUB		mmv		;// CHECK SWITCH 1,2
+			JNE		s2		;// CHECK NON ZERO
+			JGE		mmid	;// MOVE mid
 s2
 
 ;//		| PLAYER MOVE - BOT                   |
 
-			LDA	ksw		;// CHECK SWITCHES
-			SUB	bmv		;// CHECK SWITCH 2
-			JNE	s3		;// CHECK NON ZERO
-			JGE	mbot	;// MOVE bot
+			LDA		ksw		;// CHECK SWITCHES
+			SUB		bmv		;// CHECK SWITCH 2
+			JNE		s3		;// CHECK NON ZERO
+			JGE		mbot	;// MOVE bot
 s3
 
 ;//		| PLAYER MOVE - TOP                   |
 
-			LDA	ksw		;// CHECK SWITCHES
-			SUB	tmv		;// CHECK FOR SWITCH 1
-			JNE	s4		;// CHECK NON ZERO
-			JGE	mtop	;// MOVE top
+			LDA	ksw			;// CHECK SWITCHES
+			SUB	tmv			;// CHECK FOR SWITCH 1
+			JNE	s4			;// CHECK NON ZERO
+			JGE	mtop		;// MOVE top
 s4
 
 ;//		| SPAWN TEST MID											|
 
-			LDA kr4		;// CHECK KEYROW 4
-			SUB ksf		;// CHECK FOR SHIFT
-			JNE s7		;// NOT SHIFT
-			LDA mid		;// LOAD MID SEGMENT
-			STA dp0		;// STORE MID SEGMENT
-			;JGE input;// CONTINUE
+			LDA kr4			;// CHECK KEYROW 4
+			SUB ksf			;// CHECK FOR SHIFT
+			JNE s7			;// NOT SHIFT
+			LDA mid			;// LOAD MID SEGMENT
+			STA dp0			;// STORE MID SEGMENT
+			;JGE input	;// CONTINUE
 s7
 
-;//		| PLAYER DEFAULT - MIDDLE              |
+;//		| PLAYER DEFAULT - MIDDLE             |
 
-			JMP	mmid	;// IF NOT INPUT, STAY MID
+			JMP	mmid		;// IF NOT INPUT, STAY MID
 s8
 
 ;//		| NO INPUT, SKIP AND DELAY		   			|
@@ -162,10 +162,10 @@ s8
 ;// 	|-------------------------------------|
 
 halt
-			LDA	nul		;// SET ACC TO ONE
-			STA hlt		;// SET STOP SIGNAL TO ONE
+			LDA	nul			;// SET ACC TO ONE
+			STA hlt			;// SET STOP SIGNAL TO ONE
 
-			JMP mrst	;// RESET THEN STOP
+			JMP mrst		;// RESET THEN STOP
 
 ;// 	|-------------------------------------|
 ;// 	| PROGRAM RUNTIME STOPS HERE          |
