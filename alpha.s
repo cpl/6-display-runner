@@ -310,6 +310,7 @@ php		DEFW	0b00001000	;// PLAYER HEALTH
 
 nul		DEFW	&0000	;// CONSTANT ZERO VALUE
 one		DEFW	&0001	;// CONSTANT ONE  VALUE
+six		DEFW	&0006	;//	CONSTANT FOUR VALUE
 
 ;//		| SIGNALS															|
 
@@ -330,8 +331,8 @@ mmv		DEFW	&0003	;// SWITCH 1 & SWITCH 2
 
 ;//		| DELAYS															|
 
-dly		DEFW	50000	;// INNER DELAY TIME
-dlc		DEFW	00008	;// WAIT FOR N SECONDS
+dly		DEFW	50001	;// INNER DELAY TIME
+dlc		DEFW	00007	;// WAIT FOR N SECONDS
 dlp		DEFW	00003	;// WAIT FOR INPUT
 
 ;//		|	TEMPORARY STORAGE	VARIABLES					|
@@ -408,7 +409,8 @@ nsq								;// SELECT NEXT SEQUENCE
 			STA		sqc		;// RESET COUNT
 			JMP		nem		;// CONTINUE
 
-;#pythonmarker		;// PYTHON GENERATED SEQUENCE
+;#pySEQ						;// PYTHON GENERATED SEQUENCE
+
 car1
 			LDA 	bot
 			STA 	dp0
@@ -439,18 +441,19 @@ car6
 			STA 	dp0
 			JMP		nsq
 
-;#pythonmarker		;// PYTHON GEN SEQ END
-
+;#pyEND						;// PYTHON GEN SEQ END
 
 sequence					;// START SEQUENCE
 
 spc		LDA 	spc		;// LOAD SEQ PC
-			ADD		sqc		;// POINT TO SEQUENCE
 			ADD 	jop		;//	ADD JUMP OPERATION
-			ADD		4			;// SKIP INSTRUCTIONS
+			ADD		sqc		;// POINT TO SEQUENCE
+			ADD		six		;// SKIP INSTRUCTIONS
 			STA 	jsq		;// STORE IT
 
-jsq
+jsq		DEFW	jsq		;// DEFINE JUMP POSITION
+
+;#pyLNK						;// PYTHON LINK SEQUENCE
 
 			JMP 	car1
 			JMP 	car2
@@ -458,6 +461,8 @@ jsq
 			JMP 	car4
 			JMP		car5
 			JMP		car6
+
+;#pyEND						;// PYTHON LINK SEQ END
 
 			JMP		nem		;// GO BACK
 
