@@ -271,12 +271,12 @@ mcemp							;// CHECK FOR EMPTY SCREEN
 			JNE nem			;// break
 			LDA	dp1			;// LOAD DP1
 			JNE nem			;// break
-			LDA	dp2			;// LOAD DP2
-			JNE nem			;// break
+			;LDA	dp2			;// LOAD DP2
+			;JNE nem			;// break
 			LDA	dp3			;// LOAD DP3
 			JNE nem			;// break
-			LDA	dp4			;// LOAD DP4
-			JNE nem			;// break
+			;LDA	dp4			;// LOAD DP4
+			;JNE nem			;// break
 
 			JMP	sequence	;// NEXT IN SEQUENCE
 
@@ -341,7 +341,8 @@ tmp		DEFW	&0000	;// TEMPROARY VARIABLE
 
 ;//		|	PROGRAM COUNTERS										|
 
-sqc		DEFW	&0005	;// SEQUENCE COUNTER
+sqc		DEFW	&0000	;// SEQUENCE COUNTER
+sma		DEFW	&0006	;// SEQUENCE SIZE
 
 ;//		|	OP CODES														|
 
@@ -396,54 +397,68 @@ STP								;// SAFTEY STOP
 ;//		| SEQUENCE CODE BELOW                 |
 ;// 	|-------------------------------------|
 
-;#pythonmarker
-car0
-			LDA top
-			STA dp0
-			LDA sqc
-			ADD one
-			STA sqc
-			JMP nem
+nsq								;// SELECT NEXT SEQUENCE
+			LDA 	sqc		;// LOAD COUNT
+			ADD		one		;// INCREMENT
+			STA 	sqc		;// STORE COUNT
+			SUB		sma		;// SUB SEQUENCE MAx
+			JNE		nem		;// CHECK FOR MAX
+			LDA		nul		;// LOAD ONE
+			STA		sqc		;// RESET COUNT
+			JMP		nem		;// CONTINUE
+
+;#pythonmarker		;// PYTHON GENERATED SEQUENCE
 car1
-			LDA mid
-			STA dp0
-			LDA sqc
-			ADD one
-			STA sqc
-			JMP nem
+			LDA 	bot
+			STA 	dp0
+			JMP		nsq
+
 car2
-			LDA mid
-			STA dp0
-			LDA sqc
-			ADD one
-			STA sqc
-			JMP nem
+			LDA 	mid
+			STA 	dp0
+			JMP		nsq
+
 car3
-			LDA bot
-			STA dp0
-			LDA sqc
-			ADD one
-			STA sqc
-			JMP nem
-;#pythonmarker
+			LDA 	top
+			STA 	dp0
+			JMP		nsq
+
+car4
+			LDA 	mid
+			STA 	dp0
+			JMP		nsq
+
+car5
+			LDA 	bot
+			STA 	dp0
+			JMP		nsq
+
+car6
+			LDA 	top
+			STA 	dp0
+			JMP		nsq
+
+;#pythonmarker		;// PYTHON GEN SEQ END
 
 
 sequence					;// START SEQUENCE
 
-jsq		DEFW	&0000
+spc		LDA 	spc		;// LOAD SEQ PC
+			ADD		sqc		;// POINT TO SEQUENCE
+			ADD 	jop		;//	ADD JUMP OPERATION
+			ADD		4			;// SKIP INSTRUCTIONS
+			STA 	jsq		;// STORE IT
 
-spc		LDA spc			;// LOAD SEQ PC
-			ADD	sqc
-			ADD jop
-			STA jsq
-			JMP jsq
+jsq
 
-			JMP car0
-			JMP car1
-			JMP car2
-			JMP car3
+			JMP 	car1
+			JMP 	car2
+			JMP 	car3
+			JMP 	car4
+			JMP		car5
+			JMP		car6
 
-			JMP	nem			;// GO BACK
+			JMP		nem		;// GO BACK
 
 STP								;// SAFTEY STOP
 
