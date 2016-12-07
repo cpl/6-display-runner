@@ -42,7 +42,7 @@ if __name__ == '__main__':
         no comments, empty lines, etc...
     '''
     if 'light' in sys.argv:
-        with open('alpha.s', 'r') as source:
+        with open(sys.argv[2], 'r') as source:
             for line in source.readlines():
                 if not line.startswith(COMMENT) and line.split():
                     for j, c in enumerate(line):
@@ -51,15 +51,15 @@ if __name__ == '__main__':
                             break
 
     ''' Return the positions of all Python markers '''
-    if 'marker' in sys.argv:
-        with open('pytest.s', 'r') as source:
+    if 'mark' in sys.argv:
+        with open(sys.argv[2], 'r') as source:
             for i, line in enumerate(source.readlines()):
                 if line.startswith(HEADER):
                     print i, line
 
     ''' Clear the SEQ and LNK blocks from the given file '''
     if 'clear' in sys.argv:
-        with open('pytest.s', 'r') as source:
+        with open(sys.argv[2], 'r') as source:
             for i, line in enumerate(source.readlines()):
                 if line.startswith(END_MARK):
                     ENB = False
@@ -73,11 +73,11 @@ if __name__ == '__main__':
                 if line.startswith(LNK_MARK):
                     ENB = True
 
-        with open('pytest.s', 'w') as rewrite:
+        with open(sys.argv[2], 'w') as rewrite:
             rewrite.writelines(OUTPUT)
 
-    if 'sequence' in sys.argv:
-        with open('pytest.s', 'r') as source:
+    if 'seq' in sys.argv:
+        with open(sys.argv[2], 'r') as source:
             for i, line in enumerate(source.readlines()):
                 if line.startswith(END_MARK):
                     ENB = False
@@ -93,5 +93,5 @@ if __name__ == '__main__':
                     ENB = True
                     make_linking()
 
-        with open('pytest.s', 'w') as rewrite:
+        with open(sys.argv[2], 'w') as rewrite:
             rewrite.writelines(OUTPUT)

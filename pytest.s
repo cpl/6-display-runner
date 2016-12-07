@@ -1,6 +1,6 @@
 ;#pySEQ
 car1
-LDA bot
+LDA mid
 STA dp0
 JMP nsq
 car2
@@ -16,7 +16,7 @@ LDA top
 STA dp0
 JMP nsq
 car5
-LDA mid
+LDA bot
 STA dp0
 JMP nsq
 car6
