@@ -221,7 +221,7 @@ mtop							;// MOVE PLAYER TO TOP
 			LDA	top			;// LOAD TOP POSITION
 			STA	dp5			;// SET DISPLAY TO POS
 
-			LDA sdf			;// LOAD DIFF SOUND
+			LDA sdu			;// LOAD DIFF SOUND
 			STA	bzz			;// PLAY DIFF SOUND
 
 			JMP	skip
@@ -241,7 +241,7 @@ mbot							;// MOVE PLAYER TO BOTTOM
 			LDA	bot			;// LOAD BOTTOM POSITION
 			STA	dp5			;// SET DISPLAY TO POS
 
-			LDA sdf			;// LOAD DIFF SOUND
+			LDA sdd			;// LOAD DIFF SOUND
 			STA	bzz			;// PLAY DIFF SOUND
 
 			JMP	skip
@@ -271,12 +271,12 @@ mcemp							;// CHECK FOR EMPTY SCREEN
 			JNE nem			;// break
 			LDA	dp1			;// LOAD DP1
 			JNE nem			;// break
-			;LDA	dp2			;// LOAD DP2
-			;JNE nem			;// break
+			;LDA	dp2		;// LOAD DP2
+			;JNE nem		;// break
 			LDA	dp3			;// LOAD DP3
 			JNE nem			;// break
-			;LDA	dp4			;// LOAD DP4
-			;JNE nem			;// break
+			;LDA	dp4		;// LOAD DP4
+			;JNE nem		;// break
 
 			JMP	sequence	;// NEXT IN SEQUENCE
 
@@ -353,8 +353,9 @@ jop		DEFW	&4000	;// JMP INSTRUCTION
 spr		DEFW	0b1000010001001000	;// RESET
 sht		DEFW	0b1000010000010001	;// HALT
 
-sdf		DEFW	0b1000001000010110	;// DIFF
-smd		DEFW	0b1000001001110110	;// MIDDLE
+sdd		DEFW	0b1000001000010100	;// DOWN
+sdu		DEFW	0b1000001001010110	;// UP
+smd		DEFW	0b1000001000110110	;// MIDDLE
 ;//						m___ddddoooonnnn
 ;//
 ;//						m - mode
