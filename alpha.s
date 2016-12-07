@@ -177,6 +177,9 @@ s7
 
 ;//		| NO INPUT, SKIP AND DELAY						|
 
+			LDA sbm			;// LOAD BACKGROUND MUSIC
+			STA bzz			;// PLAY
+
 			JMP skip
 
 ;// 	|-------------------------------------|
@@ -349,7 +352,7 @@ nd2		LDA dff			;// CHECK DIFFICULTY 1
 			JMP	sequence	;// NEXT IN SEQUENCE
 
 STP
-mhit							;// PLAYER GOT HIT
+mhit								;// PLAYER GOT HIT
 
 			LDA	sgo
 			STA	bzz
@@ -443,11 +446,12 @@ jop		DEFW	&4000	;// JMP INSTRUCTION
 spr		DEFW	0b1000010001001000	;// RESET
 sht		DEFW	0b1000010000010001	;// HALT
 
-sdd		DEFW	0b1000001000010100	;// DOWN
 sdu		DEFW	0b1000001001010110	;// UP
-smd		DEFW	0b1000001000110110	;// MIDDLE
+smd		DEFW	0b1000001000110110	;// DOWN
 
 sgo		DEFW	0b1000001000010000	;// HIT
+
+sbm		DEFW	0b1000001000100011	;// BACKGROUND
 ;//						m___ddddoooonnnn
 ;//
 ;//						m - mode
