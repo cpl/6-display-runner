@@ -85,6 +85,10 @@ ldl0	SUB	one			;// COUNT DOWN
 
 			JNE	ldc			;// DELAY MORE
 
+			LDA ph3			;// LOAD HP
+			STA php			;// STORE HP
+			STA dbg			;// STORE HP
+
 ;// 	|-------------------------------------|
 ;// 	| SKIP, LOADING TIME					        |
 ;// 	|-------------------------------------|
@@ -137,7 +141,7 @@ s1
 s9
 			SUB	dp4			;// CHECK NEXT
 			JNE	s6			;// DODGE
-			JGE	mrst		;// GET HIT
+			JGE	mhit		;// GET HIT
 s6
 
 ;//		| PLAYER MOVE - MID                   |
@@ -345,13 +349,22 @@ nd2		LDA dff			;// CHECK DIFFICULTY 1
 STP
 mhit							;// PLAYER GOT HIT
 
-			LDA php			;// LOAD HEALTH
-			SUB one			;// TAKE DAMAGE
+			LDA ph3
+			SUB php
+			JNE	alv1
+			LDA ph2
+			STA php
+			STA dbg
+			JMP skip
 
-			STA php			;// SET NEW HEALTH
-			STA	dbg			;// SET BAR GRAPH
+alv1	LDA ph2
+			SUB php
+			JNE mrst
+			LDA ph1
+			STA php
+			STA dbg
+			JMP skip
 
-			JNE skip		;// CONTINUE
 			JGE	mrst		;// GAME OVER
 
 ;// 	|-------------------------------------|
@@ -366,7 +379,10 @@ bot		DEFW	&0003	;// DISPLAY: 0000_1000
 
 fff		DEFW	&FF		;// BAR GRAPH FULL
 
-php		DEFW	0b00001000	;// PLAYER HEALTH
+php		DEFW	0b00000111	;// PLAYER HEALTH
+ph3		DEFW	0b00000111	;// FULL HP
+ph2		DEFW	0b00000011	;// HP -1
+ph1		DEFW	0b00000001	;// HP -2
 
 ;//		| DECIMALS														|
 
