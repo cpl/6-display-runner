@@ -1,0 +1,685 @@
+KMD
+00000000:       ; ;//     |-------------------------------------|
+00000000:       ; ;//     |  6 DISPLAY RUNNER - A MU0 GAME      |
+00000000:       ; ;//     |  by Alexandru-Paul Copil, mbaxaac3  |
+00000000:       ; ;//     |  (thee-engineer)                    |
+00000000:       ; ;//     |                                     |
+00000000:       ; ;//     |  LICENSE: MIT                       |
+00000000:       ; ;//     |                                     |
+00000000:       ; ;//     |  STARTED ON : 28/11/2016            |
+00000000:       ; ;//     |  LAST EDIT  : 07/12/2016            |
+00000000:       ; ;//     |                                     |
+00000000:       ; ;//     |-------------------------------------|
+00000000:       ; 
+00000000:       ; ;//             |-------------------------------------|
+00000000:       ; ;//             | SOURCE CODE BEGINS BELOW            |
+00000000:       ; ;//     |-------------------------------------|
+00000000:       ; 
+00000000:       ; ;//     |-------------------------------------|
+00000000:       ; ;//     | PROGRAM RUNTIME BEGINS BELOW        |
+00000000:       ; ;//     |-------------------------------------|
+00000000:       ; 
+00000000:       ; init    ORG     0000            ;// RESET MEMORY ADRESS
+00000000:       ; 
+00000000: 4059  ;                         JMP     mrst            ;// RESET BOARD COMPONENTS
+00000001:       ; 
+00000001:       ; runt                                                    ;// START PROGRAM RUNTIME
+00000001:       ; 
+00000001:       ; ;//     |-------------------------------------|
+00000001:       ; ;//     | WAIT FOR START INPUT (C)                      |
+00000001:       ; ;//     |-------------------------------------|
+00000001:       ; 
+00000001:       ; menu                                                    ;// LOOP FOR USER START (DIF 1,2,X)
+00000001:       ; 
+00000001: 0FF1  ;                         LDA     kr3                     ;// CHECK KEYROW 3
+00000002: 30E8  ;                         SUB     df1                     ;// CHECK DIF 1
+00000003: 6007  ;                         JNE     me1                     ;// NOT
+00000004: 0FF1  ;                         LDA kr3                 ;// STORE IT
+00000005: 10F6  ;                         STA dff
+00000006: 501A  ;                         JGE     load            ;// LOAD
+00000007:       ; 
+00000007: 0FF1  ; me1             LDA     kr3                     ;// CHECK KEYROW 3
+00000008: 30E9  ;                         SUB df2                 ;// CHECK DIF 2
+00000009: 600D  ;                         JNE me2                 ;// NOT
+0000000A: 0FF1  ;                         LDA kr3                 ;// STORE IT
+0000000B: 10F6  ;                         STA dff
+0000000C: 501A  ;                         JGE load                ;// LOAD
+0000000D:       ; 
+0000000D: 0FF1  ; me2             LDA     kr3                     ;// CHECK KEYROW 3
+0000000E: 30EB  ;                         SUB dfx                 ;// CHECK DIF X
+0000000F: 6013  ;                         JNE me3                 ;// NOT
+00000010: 0FF1  ;                         LDA kr3                 ;// STORE IT
+00000011: 10F6  ;                         STA dff
+00000012: 501A  ;                         JGE load                ;// LOAD
+00000013:       ; 
+00000013: 0FF1  ; me3             LDA     kr3                     ;// CHECK KEYROW 3
+00000014: 30EA  ;                         SUB df3                 ;// CHECK DIF 3
+00000015: 6001  ;                         JNE menu                ;// NOT, LOOP AGAIN
+00000016: 0FF1  ;                         LDA kr3                 ;// STORE IT
+00000017: 10F6  ;                         STA dff
+00000018: 501A  ;                         JGE load                ;// LOAD
+00000019:       ; 
+00000019: 4001  ;                         JMP menu
+0000001A:       ; 
+0000001A:       ; ;//     |-------------------------------------|
+0000001A:       ; ;//     | PASS LOADING TIME                                                     |
+0000001A:       ; ;//     |-------------------------------------|
+0000001A:       ; 
+0000001A:       ; load                                                    ;// START WAITING TIME
+0000001A:       ; 
+0000001A: 00F0  ;                         LDA     dlc                     ;// LOAD GLOBAL COUNT
+0000001B: 10F3  ;                         STA     tmp                     ;// STORE LOCAL COUNT
+0000001C:       ; ldc
+0000001C: 00EF  ;                         LDA     dly                     ;// LOAD DELAY TIME
+0000001D: 30E1  ; ldl0    SUB     one                     ;// COUNT DOWN
+0000001E: 601D  ;                         JNE     ldl0            ;// LOOP
+0000001F: 00F3  ;                         LDA     tmp                     ;// LOAD DELAY COUNT
+00000020: 30E1  ;                         SUB     one                     ;// COUNT DOWN
+00000021: 10F3  ;                         STA     tmp                     ;// STORE COUNT
+00000022:       ; 
+00000022:       ; ;//             | LOADING BAR                                                                        
+                ;                         |
+00000022:       ; 
+00000022: 00F2  ;                         LDA     tbg                     ;// LOAD TEMP BAR GRAPH
+00000023: 1FFE  ;                         STA     dbg                     ;// STORE IT TO BAR GRAPH
+00000024: 20F2  ;                         ADD tbg                 ;// COUNT UP
+00000025: 10F2  ;                         STA tbg                 ;// STORE TO TEMP BAR GRAPH
+00000026:       ; 
+00000026: 601C  ;                         JNE     ldc                     ;// DELAY MORE
+00000027:       ; 
+00000027:       ; ;//             | INIT SETUP                                                                         
+                ;                         |
+00000027:       ; 
+00000027: 00DD  ;                         LDA ph3                 ;// LOAD HP
+00000028: 10DC  ;                         STA php                 ;// STORE HP
+00000029: 1FFE  ;                         STA dbg                 ;// STORE HP
+0000002A:       ; 
+0000002A: 00D9  ;                         LDA mid                 ;// LOAD PP
+0000002B: 1FFA  ;                         STA dp5                 ;// SET PLAYER
+0000002C:       ; 
+0000002C:       ; ;//     |-------------------------------------|
+0000002C:       ; ;//     | SKIP, LOADING TIME                                            |
+0000002C:       ; ;//     |-------------------------------------|
+0000002C:       ; 
+0000002C: 4037  ;                         JMP input               ;// SKIP SKIP, TAKE INPUT
+0000002D:       ; 
+0000002D:       ; skip                                                    ;// IF NO INPUT, DELAY, SKIP
+0000002D:       ; 
+0000002D: 00F1  ;                         LDA     dlp                     ;// LOAD GLOBAL COUNT
+0000002E: 10F3  ;                         STA     tmp                     ;// STORE LOCAL COUNT
+0000002F:       ; ldp
+0000002F: 00EF  ;                         LDA     dly                     ;// LOAD DELAY TIME
+00000030: 30E1  ; ldl1    SUB     one                     ;// COUNT DOWN
+00000031: 6030  ;                         JNE     ldl1            ;// LOOP
+00000032: 00F3  ;                         LDA     tmp                     ;// LOAD DELAY COUNT
+00000033: 30E1  ;                         SUB     one                     ;// COUNT DOWN
+00000034: 10F3  ;                         STA     tmp                     ;// STORE COUNT
+00000035: 602F  ;                         JNE     ldp                     ;// DELAY MORE
+00000036:       ; 
+00000036: 4093  ;                         JMP     shift           ;// SHIFT DISPLAY TO THE LEFT
+00000037:       ; s5                                                              ;// SHIFT IS DONE, CONTINUE
+00000037:       ; 
+00000037:       ; ;//     |-------------------------------------|
+00000037:       ; ;//     | SCAN FOR USER INPUT                                           |
+00000037:       ; ;//     |-------------------------------------|
+00000037:       ; 
+00000037:       ; input                                                   ;// LOOP FOR USER INPUT
+00000037:       ; 
+00000037:       ; ;//             | CHECK FOR STOP SIGNAL               |
+00000037:       ; 
+00000037: 0FEF  ;                         LDA     kr1                     ;// CHECK KEYROW 1
+00000038: 30E5  ;                         SUB     kst                     ;// CHECK FOR AC
+00000039: 603B  ;                         JNE     s0                      ;// CHECK NON ZERO
+0000003A: 5055  ;                         JGE     halt            ;// CALL HALT
+0000003B:       ; s0
+0000003B:       ; 
+0000003B:       ; ;//             | CHECK FOR RESET SIGNAL              |
+0000003B:       ; 
+0000003B: 0FF2  ;                         LDA     kr4                     ;// CHECK KEYROW 4
+0000003C: 30E4  ;                         SUB     krt                     ;// CHECK RESET
+0000003D: 603F  ;                         JNE     s1                      ;// CHECK NOT ZERO
+0000003E: 5059  ;                         JGE     mrst            ;// RESET BOARD
+0000003F:       ; s1
+0000003F:       ; 
+0000003F:       ; ;//             | COLLISION CHECK                                       |
+0000003F:       ; 
+0000003F: 0FFA  ;                         LDA     dp5                     ;// CHECK PLAYER
+00000040: 6042  ;                         JNE s9                  ;// OK PLAYER
+00000041: 4045  ;                         JMP s6                  ;// PLAYER IS NULL
+00000042:       ; s9
+00000042: 3FF9  ;                         SUB     dp4                     ;// CHECK NEXT
+00000043: 6045  ;                         JNE     s6                      ;// DODGE
+00000044: 50C7  ;                         JGE     mhit            ;// GET HIT
+00000045:       ; s6
+00000045:       ; 
+00000045:       ; ;//             | PLAYER MOVE - BOT                   |
+00000045:       ; 
+00000045: 0FEE  ;                         LDA             ksw             ;// CHECK SWITCHES
+00000046: 30ED  ;                         SUB             bmv             ;// CHECK SWITCH 2
+00000047: 6049  ;                         JNE             s3              ;// CHECK NON ZERO
+00000048: 5084  ;                         JGE             mbot    ;// MOVE bot
+00000049:       ; s3
+00000049:       ; 
+00000049:       ; ;//             | PLAYER MOVE - TOP                   |
+00000049:       ; 
+00000049: 0FEE  ;                         LDA     ksw                     ;// CHECK SWITCHES
+0000004A: 30EC  ;                         SUB     tmv                     ;// CHECK FOR SWITCH 1
+0000004B: 604D  ;                         JNE     s4                      ;// CHECK NON ZERO
+0000004C: 5075  ;                         JGE     mtop            ;// MOVE top
+0000004D:       ; s4
+0000004D:       ; 
+0000004D:       ; ;//             | SPAWN TEST MID                                                                     
+                ;                 |
+0000004D:       ; 
+0000004D: 0FF2  ;                         LDA kr4                 ;// CHECK KEYROW 4
+0000004E: 30E7  ;                         SUB ksf                 ;// CHECK FOR SHIFT
+0000004F: 6052  ;                         JNE s7                  ;// NOT SHIFT
+00000050: 00D9  ;                         LDA mid                 ;// LOAD MID SEGMENT
+00000051: 1FF5  ;                         STA dp0                 ;// STORE MID SEGMENT
+00000052:       ;                         ;JGE input      ;// CONTINUE
+00000052:       ; s7
+00000052:       ; 
+00000052:       ; ;//             | NO INPUT, SKIP AND DELAY                                              |
+00000052:       ; 
+00000052: 00FD  ;                         LDA sbm                 ;// LOAD BACKGROUND MUSIC
+00000053: 1FFD  ;                         STA bzz                 ;// PLAY
+00000054:       ; 
+00000054: 402D  ;                         JMP skip
+00000055:       ; 
+00000055:       ; ;//     |-------------------------------------|
+00000055:       ; ;//     | HALT                                                                                       
+                ;         |
+00000055:       ; ;//     |-------------------------------------|
+00000055:       ; 
+00000055:       ; halt
+00000055: 00E0  ;                         LDA     nul                     ;// SET ACC TO ONE
+00000056: 10E3  ;                         STA hlt                 ;// SET STOP SIGNAL TO ONE
+00000057:       ; 
+00000057: 4059  ;                         JMP mrst                ;// RESET THEN STOP
+00000058:       ; 
+00000058:       ; ;//     |-------------------------------------|
+00000058:       ; ;//     | PROGRAM RUNTIME STOPS HERE          |
+00000058:       ; ;//     |-------------------------------------|
+00000058:       ; 
+00000058:       ; ;//     |-------------------------------------|
+00000058:       ; ;//     | PROGRAM METHODS                     |
+00000058:       ; ;//             |-------------------------------------|
+00000058:       ; 
+00000058: 7000  ; STP
+00000059:       ; mrst                                                    ;// RESET/STOP THE PROGRAM
+00000059:       ; 
+00000059: 00E0  ;                         LDA nul                 ;// LOAD NULL
+0000005A:       ; 
+0000005A: 1FF5  ;                         STA     dp0                     ;// RESET DISPLAY 0
+0000005B: 1FF6  ;                         STA     dp1                     ;// RESET DISPLAY 1
+0000005C: 1FF7  ;                         STA     dp2                     ;// RESET DISPLAY 2
+0000005D: 1FF8  ;                         STA     dp3                     ;// RESET DISPLAY 3
+0000005E: 1FF9  ;                         STA     dp4                     ;// RESET DISPLAY 4
+0000005F: 1FFA  ;                         STA     dp5                     ;// RESET DISPLAY 5
+00000060:       ; 
+00000060: 00DB  ;                         LDA fff                 ;// LOAD FULL BG
+00000061: 1FFE  ;                         STA     dbg                     ;// RESET BAR GRAPH
+00000062:       ; 
+00000062: 00F8  ;                         LDA     spr                     ;// LOAD POS SOUND
+00000063: 1FFD  ;                         STA     bzz                     ;// STORE IN BUZZER
+00000064:       ; 
+00000064: 00E3  ;                         LDA     hlt                     ;//     LOAD STOP SIGNAL
+00000065: 6001  ;                         JNE     runt            ;//     START THE PROGRAM
+00000066:       ; 
+00000066: 00F9  ;                         LDA     sht                     ;// LOAD HALT SOUND
+00000067: 1FFD  ;                         STA     bzz                     ;// STORE IN BUZZER
+00000068:       ; 
+00000068: 00E0  ;                         LDA nul                 ;// LOAD NULL
+00000069: 1FFE  ;                         STA     dbg                     ;// RESET BAR GRAPH
+0000006A:       ; 
+0000006A: 7000  ;                         STP                                     ;// STOP THE PROGRAM
+0000006B:       ; 
+0000006B: 7000  ; STP
+0000006C:       ; mlal                                                    ;// SET ALL DISPLAYS TO ACC
+0000006C: 1FF5  ;                         STA     dp0                     ;// SET DISPLAY 0
+0000006D: 1FF6  ;                         STA     dp1                     ;// SET DISPLAY 1
+0000006E: 1FF7  ;                         STA dp2                 ;// SET DISPLAY 2
+0000006F: 1FF8  ;                         STA     dp3                     ;// SET DISPLAY 3
+00000070: 1FF9  ;                         STA     dp4                     ;// SET DISPLAY 4
+00000071: 1FFA  ;                         STA     dp5                     ;// SET DISPLAY 5
+00000072: 1FFE  ;                         STA     dbg                     ;// SET BAR GRAPH
+00000073:       ; 
+00000073: 402D  ;                         JMP skip                ;// CONTINUE
+00000074:       ; 
+00000074: 7000  ; STP
+00000075:       ; mtop                                                    ;// MOVE PLAYER TO TOP
+00000075:       ; 
+00000075: 00FA  ;                         LDA sdu                 ;// LOAD DIFF SOUND
+00000076: 1FFD  ;                         STA     bzz                     ;// PLAY DIFF SOUND
+00000077:       ; 
+00000077: 0FFA  ;                         LDA dp5                 ;// CHECK PLAYER POS
+00000078: 30DA  ;                         SUB bot                 ;// CHECK BOT
+00000079: 607D  ;                         JNE mt1                 ;// NOT   BOT
+0000007A: 00D9  ;                         LDA mid                 ;// GO TO MID
+0000007B: 1FFA  ;                         STA dp5
+0000007C: 402D  ;                         JMP skip                ;// CONTINUE
+0000007D:       ; 
+0000007D: 0FFA  ; mt1             LDA dp5                 ;// CHECK PLAYER POS
+0000007E: 30D9  ;                         SUB mid                 ;// CHECK MID
+0000007F: 602D  ;                         JNE skip                ;// NOT   MID
+00000080: 00D8  ;                         LDA top                 ;// GO TO TOP
+00000081: 1FFA  ;                         STA dp5
+00000082: 402D  ;                         JMP skip                ;// CONTINUE
+00000083:       ; 
+00000083: 7000  ; STP
+00000084:       ; mbot                                                    ;// MOVE PLAYER TO BOTTOM
+00000084:       ; 
+00000084: 00FB  ;                         LDA smd                 ;// LOAD DIFF SOUND
+00000085: 1FFD  ;                         STA     bzz                     ;// PLAY DIFF SOUND
+00000086:       ; 
+00000086: 0FFA  ;                         LDA dp5                 ;// CHECK PLAYER POS
+00000087: 30D8  ;                         SUB top                 ;// CHECK TOP
+00000088: 608C  ;                         JNE mt2                 ;// NOT   TOP
+00000089: 00D9  ;                         LDA mid                 ;// GO TO MID
+0000008A: 1FFA  ;                         STA dp5
+0000008B: 402D  ;                         JMP skip                ;// CONTINUE
+0000008C:       ; 
+0000008C: 0FFA  ; mt2             LDA dp5                 ;// CHECK PLAYER POS
+0000008D: 30D9  ;                         SUB mid                 ;// CHECK MID
+0000008E: 602D  ;                         JNE skip                ;// NOT   MID
+0000008F: 00DA  ;                         LDA bot                 ;// GO TO BOT
+00000090: 1FFA  ;                         STA dp5
+00000091: 402D  ;                         JMP skip                ;// CONTINUE
+00000092:       ; 
+00000092: 7000  ; STP
+00000093:       ; shift                                                   ;// MOVE dp3-0 TO THE LEFT
+00000093:       ; 
+00000093: 0FF8  ;                         LDA     dp3                     ;// MOVE dp3 TO THE LEFT
+00000094: 1FF9  ;                         STA     dp4
+00000095: 0FF7  ;                         LDA     dp2                     ;// MOVE dp2 TO THE LEFT
+00000096: 1FF8  ;                         STA     dp3
+00000097: 0FF6  ;                         LDA     dp1                     ;// MOVE dp1 TO THE LEFT
+00000098: 1FF7  ;                         STA     dp2
+00000099: 0FF5  ;                         LDA     dp0                     ;// MOVE dp0 TO THE LEFT
+0000009A: 1FF6  ;                         STA     dp1
+0000009B:       ; 
+0000009B: 00E0  ;                         LDA nul                 ;// EMPTY FIRST
+0000009C: 1FF5  ;                         STA dp0
+0000009D:       ; 
+0000009D: 40A0  ;                         JMP mcemp               ;// SPAWN NEXT
+0000009E: 4037  ; nem             JMP     s5                      ;// CONTINUE
+0000009F:       ; 
+0000009F: 7000  ; STP
+000000A0:       ; mcemp                                                   ;// CHECK FOR EMPTY SCREEN
+000000A0:       ; 
+000000A0:       ; 
+000000A0: 00F6  ;                         LDA dff                 ;// CHECK DIFFICULTY X
+000000A1: 30EB  ;                         SUB dfx                 ;// CHECK IF X
+000000A2: 60A4  ;                         JNE ndx                 ;// NOT X
+000000A3: 4119  ;                         JMP sequence;// DIF X
+000000A4:       ; 
+000000A4: 00F6  ; ndx             LDA dff                 ;// CHECK DIFFICULTY 3
+000000A5: 30EA  ;                         SUB df3
+000000A6: 60AE  ;                         JNE nd3
+000000A7:       ; 
+000000A7: 0FF5  ;                         LDA dp0                 ;// CHECK DISPLAY
+000000A8: 609E  ;                         JNE nem
+000000A9: 0FF6  ;                         LDA dp1
+000000AA: 609E  ;                         JNE nem
+000000AB: 0FF8  ;                         LDA dp3
+000000AC: 609E  ;                         JNE nem
+000000AD:       ; 
+000000AD: 4119  ;                         JMP sequence
+000000AE:       ; 
+000000AE: 00F6  ; nd3             LDA dff                 ;// CHECK DIFFICULTY 2
+000000AF: 30E9  ;                         SUB df2
+000000B0: 60B8  ;                         JNE nd2
+000000B1:       ; 
+000000B1: 0FF5  ;                         LDA dp0                 ;// CHECK DISPLAY
+000000B2: 609E  ;                         JNE nem
+000000B3: 0FF6  ;                         LDA dp1
+000000B4: 609E  ;                         JNE nem
+000000B5: 0FF7  ;                         LDA dp2
+000000B6: 609E  ;                         JNE nem
+000000B7:       ; 
+000000B7: 4119  ;                         JMP sequence
+000000B8:       ; 
+000000B8: 00F6  ; nd2             LDA dff                 ;// CHECK DIFFICULTY 1
+000000B9: 30E8  ;                         SUB df1
+000000BA: 6119  ;                         JNE sequence
+000000BB:       ; 
+000000BB: 0FF5  ;                         LDA dp0
+000000BC: 609E  ;                         JNE nem
+000000BD: 0FF6  ;                         LDA dp1
+000000BE: 609E  ;                         JNE nem
+000000BF: 0FF7  ;                         LDA dp2
+000000C0: 609E  ;                         JNE nem
+000000C1: 0FF8  ;                         LDA dp3
+000000C2: 609E  ;                         JNE nem
+000000C3: 0FF9  ;                         LDA dp4
+000000C4: 609E  ;                         JNE nem
+000000C5:       ; 
+000000C5: 4119  ;                         JMP     sequence        ;// NEXT IN SEQUENCE
+000000C6:       ; 
+000000C6: 7000  ; STP
+000000C7:       ; mhit                                                            ;// PLAYER GOT HIT
+000000C7:       ; 
+000000C7: 00FC  ;                         LDA     sgo
+000000C8: 1FFD  ;                         STA     bzz
+000000C9:       ; 
+000000C9: 00DD  ;                         LDA ph3
+000000CA: 30DC  ;                         SUB php
+000000CB: 60D0  ;                         JNE     alv1
+000000CC: 00DE  ;                         LDA ph2
+000000CD: 10DC  ;                         STA php
+000000CE: 1FFE  ;                         STA dbg
+000000CF: 402D  ;                         JMP skip
+000000D0:       ; 
+000000D0: 00DE  ; alv1    LDA ph2
+000000D1: 30DC  ;                         SUB php
+000000D2: 6059  ;                         JNE mrst
+000000D3: 00DF  ;                         LDA ph1
+000000D4: 10DC  ;                         STA php
+000000D5: 1FFE  ;                         STA dbg
+000000D6: 402D  ;                         JMP skip
+000000D7:       ; 
+000000D7: 5059  ;                         JGE     mrst            ;// GAME OVER
+000000D8:       ; 
+000000D8:       ; ;//     |-------------------------------------|
+000000D8:       ; ;//     | PROGRAM MEMORY ALOCATION            |
+000000D8:       ; ;//             |-------------------------------------|
+000000D8:       ; 
+000000D8:       ; ;//             | DISPLAY POSITIONS                   |
+000000D8:       ; 
+000000D8: 0001  ; top             DEFW    &0001   ;//     DISPLAY: 0000_0001
+000000D9: 0002  ; mid             DEFW    &0002   ;//     DISPLAY: 0100_0000
+000000DA: 0003  ; bot             DEFW    &0003   ;// DISPLAY: 0000_1000
+000000DB:       ; 
+000000DB: 00FF  ; fff             DEFW    &FF             ;// BAR GRAPH FULL
+000000DC:       ; 
+000000DC: 0007  ; php             DEFW    0b00000111      ;// PLAYER HEALTH
+000000DD: 0007  ; ph3             DEFW    0b00000111      ;// FULL HP
+000000DE: 0003  ; ph2             DEFW    0b00000011      ;// HP -1
+000000DF: 0001  ; ph1             DEFW    0b00000001      ;// HP -2
+000000E0:       ; 
+000000E0:       ; ;//             | DECIMALS                                                                           
+                ;                                 |
+000000E0:       ; 
+000000E0: 0000  ; nul             DEFW    &0000   ;// CONSTANT ZERO VALUE
+000000E1: 0001  ; one             DEFW    &0001   ;// CONSTANT ONE  VALUE
+000000E2: 0006  ; six             DEFW    &0006   ;//     CONSTANT FOUR VALUE
+000000E3:       ; 
+000000E3:       ; ;//             | SIGNALS                                                                            
+                ;                                         |
+000000E3:       ; 
+000000E3: 0001  ; hlt             DEFW    &0001   ;// PROGRAM HALT SIGNAL
+000000E4:       ; 
+000000E4:       ; ;//             | KEYROWS                                                                            
+                ;                                         |
+000000E4:       ; 
+000000E4: 0080  ; krt             DEFW    &0080   ;// KEYROW 4, RESET
+000000E5: 0002  ; kst             DEFW    &0002   ;// KEYROW 1, AC
+000000E6: 0004  ; ksa             DEFW    &0004   ;// KEYROW 1, C
+000000E7: 0040  ; ksf             DEFW    &0040   ;// KEYROW 4, SHIFT
+000000E8:       ; 
+000000E8: 0020  ; df1             DEFW    &0020   ;// DIFFICULTY 1
+000000E9: 0010  ; df2             DEFW    &0010   ;// DIFFICULTY 2
+000000EA: 0008  ; df3             DEFW    &0008   ;// DIFFICULTY 3
+000000EB: 0004  ; dfx             DEFW    &0004 ;// DIFFICULTY X
+000000EC:       ; 
+000000EC:       ; ;//             |       SWITCHES                                                                     
+                ;                                         |
+000000EC:       ; 
+000000EC: 0001  ; tmv             DEFW    &0001   ;// SWITCH 1
+000000ED: 0002  ; bmv             DEFW    &0002   ;// SWITCH 2
+000000EE: 0003  ; mmv             DEFW    &0003   ;// SWITCH 1 & SWITCH 2
+000000EF:       ; 
+000000EF:       ; ;//             | DELAYS                                                                             
+                ;                                         |
+000000EF:       ; 
+000000EF: C351  ; dly             DEFW    50001   ;// INNER DELAY TIME
+000000F0: 0007  ; dlc             DEFW    00007   ;// WAIT FOR N SECONDS
+000000F1: 0002  ; dlp             DEFW    00002   ;// WAIT FOR INPUT
+000000F2:       ; 
+000000F2:       ; ;//             |       TEMPORARY STORAGE       VARIABLES                                       |
+000000F2:       ; 
+000000F2: 0001  ; tbg             DEFW    &0001   ;// TEMPORARY BAR GRAPH
+000000F3: 0000  ; tmp             DEFW    &0000   ;// TEMPROARY VARIABLE
+000000F4:       ; 
+000000F4:       ; ;//             |       PROGRAM COUNTERS                                                             
+                ;                 |
+000000F4:       ; 
+000000F4: 0000  ; sqc             DEFW    &0000   ;// SEQUENCE COUNTER
+000000F5: 0006  ; sma             DEFW    &0006   ;// SEQUENCE SIZE
+000000F6: 0000  ; dff             DEFW    &0000   ;// DIFFICULTY
+000000F7:       ; 
+000000F7:       ; ;//             |       OP CODES                                                                     
+                ;                                         |
+000000F7:       ; 
+000000F7: 4000  ; jop             DEFW    &4000   ;// JMP INSTRUCTION
+000000F8:       ; 
+000000F8:       ; ;//             |       AUDIO AND BUZZER                                                             
+                ;                 |
+000000F8:       ; 
+000000F8: 8448  ; spr             DEFW    0b1000010001001000      ;// RESET
+000000F9: 8411  ; sht             DEFW    0b1000010000010001      ;// HALT
+000000FA:       ; 
+000000FA: 8256  ; sdu             DEFW    0b1000001001010110      ;// UP
+000000FB: 8236  ; smd             DEFW    0b1000001000110110      ;// DOWN
+000000FC:       ; 
+000000FC: 8210  ; sgo             DEFW    0b1000001000010000      ;// HIT
+000000FD:       ; 
+000000FD: 8223  ; sbm             DEFW    0b1000001000100011      ;// BACKGROUND
+000000FE:       ; ;//                                             m___ddddoooonnnn
+000000FE:       ; ;//
+000000FE:       ; ;//                                             m - mode
+000000FE:       ; ;//                                             d - duration
+000000FE:       ; ;//                                             o - octave
+000000FE:       ; ;//                                             n - note
+000000FE:       ; 
+000000FE:       ; ;//     |-------------------------------------|
+000000FE:       ; ;//     | COMPILER DEFINED CONSTANTS          |
+000000FE:       ; ;//             |-------------------------------------|
+000000FE:       ; 
+000000FE:       ; ;//             |       OUTPUTS                                                                      
+                ;                                         |
+000000FE:       ; 
+000000FE:       ; dp0             EQU             &FF5    ;// CONSTANT DISPLAY 0
+000000FE:       ; dp1             EQU             &FF6    ;// CONSTANT DISPLAY 1
+000000FE:       ; dp2             EQU             &FF7    ;// CONSTANT DISPLAY 2
+000000FE:       ; dp3             EQU             &FF8    ;// CONSTANT DISPLAY 3
+000000FE:       ; dp4             EQU             &FF9    ;// CONSTANT DISPLAY 4
+000000FE:       ; dp5             EQU             &FFA    ;// CONSTANT DISPLAY 5
+000000FE:       ; 
+000000FE:       ; dbg             EQU             &FFE    ;// CONSTANT BAR GRAPH
+000000FE:       ; 
+000000FE:       ; bzz             EQU             &FFD    ;// BUZZER INPUT SOUND
+000000FE:       ; 
+000000FE:       ; ;//             | INPUTS                                                                             
+                ;                                         |
+000000FE:       ; 
+000000FE:       ; kr1             EQU             &FEF    ;// KEY ROW 1
+000000FE:       ; kr3             EQU             &FF1    ;// KEY ROW 3
+000000FE:       ; kr4             EQU             &FF2    ;// KEY ROW 4
+000000FE:       ; ksw             EQU             &FEE    ;// SWITCHES
+000000FE:       ; 
+000000FE:       ; bzb             EQU             &FF3    ;// BUZZER BUSY
+000000FE:       ; 
+000000FE: 7000  ; STP                                                             ;// SAFTEY STOP
+000000FF:       ; 
+000000FF:       ; ;//             |-------------------------------------|
+000000FF:       ; ;//             | SOURCE CODE STOPS HERE              |
+000000FF:       ; ;//     |-------------------------------------|
+000000FF:       ; 
+000000FF:       ; ;//             |-------------------------------------|
+000000FF:       ; ;//             | SEQUENCE CODE BELOW                 |
+000000FF:       ; ;//     |-------------------------------------|
+000000FF:       ; 
+000000FF:       ; nsq                                                             ;// SELECT NEXT SEQUENCE
+000000FF: 00F4  ;                         LDA     sqc             ;// LOAD COUNT
+00000100: 20E1  ;                         ADD             one             ;// INCREMENT
+00000101: 10F4  ;                         STA     sqc             ;// STORE COUNT
+00000102: 30F5  ;                         SUB             sma             ;// SUB SEQUENCE MAx
+00000103: 609E  ;                         JNE             nem             ;// CHECK FOR MAX
+00000104: 00E0  ;                         LDA             nul             ;// LOAD ONE
+00000105: 10F4  ;                         STA             sqc             ;// RESET COUNT
+00000106: 409E  ;                         JMP             nem             ;// CONTINUE
+00000107:       ; 
+00000107:       ; ;#pySEQ                                         ;// PYTHON GENERATED SEQUENCE
+00000107:       ; 
+00000107:       ; car1
+00000107: 00DA  ;                         LDA     bot
+00000108: 1FF5  ;                         STA     dp0
+00000109: 40FF  ;                         JMP             nsq
+0000010A:       ; 
+0000010A:       ; car2
+0000010A: 00D9  ;                         LDA     mid
+0000010B: 1FF5  ;                         STA     dp0
+0000010C: 40FF  ;                         JMP             nsq
+0000010D:       ; 
+0000010D:       ; car3
+0000010D: 00D8  ;                         LDA     top
+0000010E: 1FF5  ;                         STA     dp0
+0000010F: 40FF  ;                         JMP             nsq
+00000110:       ; 
+00000110:       ; car4
+00000110: 00D9  ;                         LDA     mid
+00000111: 1FF5  ;                         STA     dp0
+00000112: 40FF  ;                         JMP             nsq
+00000113:       ; 
+00000113:       ; car5
+00000113: 00DA  ;                         LDA     bot
+00000114: 1FF5  ;                         STA     dp0
+00000115: 40FF  ;                         JMP             nsq
+00000116:       ; 
+00000116:       ; car6
+00000116: 00D8  ;                         LDA     top
+00000117: 1FF5  ;                         STA     dp0
+00000118: 40FF  ;                         JMP             nsq
+00000119:       ; 
+00000119:       ; ;#pyEND                                         ;// PYTHON GEN SEQ END
+00000119:       ; 
+00000119:       ; sequence                                        ;// START SEQUENCE
+00000119:       ; 
+00000119: 0119  ; spc             LDA     spc             ;// LOAD SEQ PC
+0000011A: 20F7  ;                         ADD     jop             ;//     ADD JUMP OPERATION
+0000011B: 20F4  ;                         ADD             sqc             ;// POINT TO SEQUENCE
+0000011C: 20E2  ;                         ADD             six             ;// SKIP INSTRUCTIONS
+0000011D: 111E  ;                         STA     jsq             ;// STORE IT
+0000011E:       ; 
+0000011E: 011E  ; jsq             DEFW    jsq             ;// DEFINE JUMP POSITION
+0000011F:       ; 
+0000011F:       ; ;#pyLNK                                         ;// PYTHON LINK SEQUENCE
+0000011F:       ; 
+0000011F: 4107  ;                         JMP     car1
+00000120: 410A  ;                         JMP     car2
+00000121: 410D  ;                         JMP     car3
+00000122: 4110  ;                         JMP     car4
+00000123: 4113  ;                         JMP             car5
+00000124: 4116  ;                         JMP             car6
+00000125:       ; 
+00000125:       ; ;#pyEND                                         ;// PYTHON LINK SEQ END
+00000125:       ; 
+00000125: 409E  ;                         JMP             nem             ;// GO BACK
+00000126:       ; 
+00000126: 7000  ; STP                                                             ;// SAFTEY STOP
+00000127:       ; 
+00000127:       ; ;//             |-------------------------------------|
+00000127:       ; ;//             | SEQUENCE CODE ABOVE                 |
+00000127:       ; ;//     |-------------------------------------|
+00000127:       ; 
+
+Symbol Table: Labels
+: init                              00000000  Local --
+: runt                              00000001  Local --
+: menu                              00000001  Local --
+: me1                               00000007  Local --
+: me2                               0000000D  Local --
+: me3                               00000013  Local --
+: load                              0000001A  Local --
+: ldc                               0000001C  Local --
+: ldl0                              0000001D  Local --
+: skip                              0000002D  Local --
+: ldp                               0000002F  Local --
+: ldl1                              00000030  Local --
+: s5                                00000037  Local --
+: input                             00000037  Local --
+: s0                                0000003B  Local --
+: s1                                0000003F  Local --
+: s9                                00000042  Local --
+: s6                                00000045  Local --
+: s3                                00000049  Local --
+: s4                                0000004D  Local --
+: s7                                00000052  Local --
+: halt                              00000055  Local --
+: mrst                              00000059  Local --
+: mlal                              0000006C  Local --
+: mtop                              00000075  Local --
+: mt1                               0000007D  Local --
+: mbot                              00000084  Local --
+: mt2                               0000008C  Local --
+: shift                             00000093  Local --
+: nem                               0000009E  Local --
+: mcemp                             000000A0  Local --
+: ndx                               000000A4  Local --
+: nd3                               000000AE  Local --
+: nd2                               000000B8  Local --
+: mhit                              000000C7  Local --
+: alv1                              000000D0  Local --
+: top                               000000D8  Local --
+: mid                               000000D9  Local --
+: bot                               000000DA  Local --
+: fff                               000000DB  Local --
+: php                               000000DC  Local --
+: ph3                               000000DD  Local --
+: ph2                               000000DE  Local --
+: ph1                               000000DF  Local --
+: nul                               000000E0  Local --
+: one                               000000E1  Local --
+: six                               000000E2  Local --
+: hlt                               000000E3  Local --
+: krt                               000000E4  Local --
+: kst                               000000E5  Local --
+: ksa                               000000E6  Local --
+: ksf                               000000E7  Local --
+: df1                               000000E8  Local --
+: df2                               000000E9  Local --
+: df3                               000000EA  Local --
+: dfx                               000000EB  Local --
+: tmv                               000000EC  Local --
+: bmv                               000000ED  Local --
+: mmv                               000000EE  Local --
+: dly                               000000EF  Local --
+: dlc                               000000F0  Local --
+: dlp                               000000F1  Local --
+: tbg                               000000F2  Local --
+: tmp                               000000F3  Local --
+: sqc                               000000F4  Local --
+: sma                               000000F5  Local --
+: dff                               000000F6  Local --
+: jop                               000000F7  Local --
+: spr                               000000F8  Local --
+: sht                               000000F9  Local --
+: sdu                               000000FA  Local --
+: smd                               000000FB  Local --
+: sgo                               000000FC  Local --
+: sbm                               000000FD  Local --
+: dp0                               00000FF5  Value
+: dp1                               00000FF6  Value
+: dp2                               00000FF7  Value
+: dp3                               00000FF8  Value
+: dp4                               00000FF9  Value
+: dp5                               00000FFA  Value
+: dbg                               00000FFE  Value
+: bzz                               00000FFD  Value
+: kr1                               00000FEF  Value
+: kr3                               00000FF1  Value
+: kr4                               00000FF2  Value
+: ksw                               00000FEE  Value
+: bzb                               00000FF3  Value
+: nsq                               000000FF  Local --
+: car1                              00000107  Local --
+: car2                              0000010A  Local --
+: car3                              0000010D  Local --
+: car4                              00000110  Local --
+: car5                              00000113  Local --
+: car6                              00000116  Local --
+: sequence                          00000119  Local --
+: spc                               00000119  Local --
+: jsq                               0000011E  Local --
+

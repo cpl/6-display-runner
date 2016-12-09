@@ -3,3 +3,6 @@
 
 # IGNORE OS MISC FILES #
 *.DS_Store
+
+# Allow bin
+!bin/*.kmd
